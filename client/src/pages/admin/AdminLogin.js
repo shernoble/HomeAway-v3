@@ -2,8 +2,9 @@
 import { useState,useEffect } from "react"
 // import "../assets/css/startingPage.css"
 import { Helmet,HelmetProvider } from "react-helmet-async";
+import { NavLink } from "react-router-dom";
 
-export function GuestLogin(){
+export function AdminLogin(){
 
     // usestate
     // const [numguests,setNumGuests]=useState(2);
@@ -78,41 +79,41 @@ export function GuestLogin(){
                     <div className="row d-flex justify-content-center align-items-center ">
                     <div className="col col-xl-10">
                         <div className="card" style={{borderRadius: '1rem'}}>
-                        <div className="row g-0">
-                            <div className="col-md-6 col-lg-5 d-none d-md-block">
-                            <img src="/imgs/12.jpg"
-                                alt="login form" className="img-fluid h-125" style={{borderRadius: '1rem 1rem 1rem 1rem'}}/>
+                            <div className="row g-0">
+                                <div className="col-md-6 col-lg-5 d-none d-md-block">
+                                <img src="/imgs/12.jpg"
+                                    alt="login form" className="img-fluid h-125" style={{borderRadius: '1rem 1rem 1rem 1rem'}}/>
+                                </div>
+                                <div className="col-md-6 col-lg-7 d-flex ">
+                                <div className="card-body p-4 p-lg-4 text-black">
+
+                                    <form>
+
+                                    <div className="d-flex align-items-center mb-3 pb-1 ">
+                                        <span className="h1 fw-bold mb-4">Home Away (Guest)</span>
+                                    </div>
+
+                                    <h5 className="fw-medium mb-4 pb-3" style={{letterSpacing: '1px'}}>Sign into your account</h5>
+
+                                    <div className="form-outline mb-4">
+                                        <input type="email" className="form-control form-control-md" id="email" name="email" placeholder="Email address" required />
+                                    </div>
+
+                                    <div className="form-outline mb-4">
+                                        <input type="password" className="form-control form-control-md" id="password" name="password" placeholder="Password" required />
+                                    </div>
+
+                                    <div className="pt-0 mb-4">
+                                        <button className="btn btn-dark btn-md btn-block" type="submit">LOGIN</button>
+                                    </div>
+
+                                    <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <NavLink to="/admin/register"
+                                        style={{color: '#393f81'}}>Register here</NavLink></p>
+                                    </form>
+
+                                </div>
+                                </div>
                             </div>
-                            <div className="col-md-6 col-lg-7 d-flex ">
-                            <div className="card-body p-4 p-lg-4 text-black">
-
-                                <form>
-
-                                <div className="d-flex align-items-center mb-3 pb-1 ">
-                                    <span className="h1 fw-bold mb-4">Home Away (Guest)</span>
-                                </div>
-
-                                <h5 className="fw-medium mb-4 pb-3" style={{letterSpacing: '1px'}}>Sign into your account</h5>
-
-                                <div className="form-outline mb-4">
-                                    <input type="email" className="form-control form-control-md" id="email" name="email" placeholder="Email address" required />
-                                </div>
-
-                                <div className="form-outline mb-4">
-                                    <input type="password" className="form-control form-control-md" id="password" name="password" placeholder="Password" required />
-                                </div>
-
-                                <div className="pt-0 mb-4">
-                                    <button className="btn btn-dark btn-md btn-block" type="submit">LOGIN</button>
-                                </div>
-
-                                <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <a href="/guest/register"
-                                    style={{color: '#393f81'}}>Register here</a></p>
-                                </form>
-
-                            </div>
-                            </div>
-                        </div>
                         </div>
                     </div>
                     </div>

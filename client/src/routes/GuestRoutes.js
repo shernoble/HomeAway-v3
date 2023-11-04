@@ -1,8 +1,9 @@
 import { Routes,Route } from "react-router-dom";
 
-import { GuestStartingPage } from "../pages/guest-startingpage";
-import {GuestLogin} from "../pages/guest-login";
-import {GuestRegister} from "../pages/guest-register";
+import { GuestStartingPage } from "../pages/guest/GuestStartingPage";
+import {GuestLogin} from "../pages/guest/GuestLogin";
+import {GuestRegister} from "../pages/guest/GuestRegister";
+// import {Gues}
 
 export function GuestRoutes(){
 
