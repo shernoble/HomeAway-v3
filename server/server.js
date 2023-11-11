@@ -4,12 +4,10 @@ const cors=require("cors");
 // const mongoose=require("mongoose");
 const genroutes=require("./routes/record");
 const adminroutes=require("./routes/adminRoutes");
+const guestroutes=require("./routes/guestRoutes");
 require('dotenv').config();
 
-const bodyParser = require("body-parser")
-
-
-
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -18,11 +16,13 @@ app.use(cors());
 app.use(express.json());
 // app.use(express.json()) 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/",genroutes);
 app.use("/admin",adminroutes);
+app.use("/guest",guestroutes);
+app.use("/",genroutes);
+
 
 // const uri=process.env.MONGODB_URI;
-// mongoose.connect(uri);
+// mongoose.connect(uri);   
 // const connection=mongoose.connection;
 // connection.once('open', () => {
 //     console.log("mongodb connection est successfully!");

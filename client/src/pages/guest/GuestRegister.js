@@ -1,69 +1,57 @@
 
-import { useState,useEffect } from "react";
-import {useNavigate} from "react-router-dom";
-// import "../assets/css/startingPage.css"
+import { useState } from "react"
+import {useDispatch} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
+import { NavLink,useNavigate} from "react-router-dom";
+import { AuthActions } from "../../store/authSlice";
+import { isFormValid } from "../gen/registerValidation";
+
+import axios from "axios";
 
 export function GuestRegister(){
-
-    // usestate
-    // const [numguests,setNumGuests]=useState(2);
-    const navigate = useNavigate();
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
     const [formvalues,setFormValues]=useState({
-        username:"",
-        email:"",
-        phone:"",
-        password:"",
-        confirmPassword:""
+        username:'',
+        email:'',
+        phone:'',
+        password:'',
+        cpassword:'',
     });
-    const [formErrors,setFormErrors]=useState({});
-    const [isSubmit,setisSubmit]=useState(false);
 
-    
+    const submitHandler = async (event) => {
+        event.preventDefault();
+        const validationError = isFormValid(formvalues);
 
-    const handleChange = (e) => {
-        const {name,value}=e.target;
-        console.log("name:"+name+" val:"+value);
-        setFormValues({...formvalues,[name]:value});
-    }
-
-    async function handleSubmit(e){
-        e.preventDefault();
-
-        const newUser={...formvalues};
-
-        await fetch("http://localhost:5050/register", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newUser),
-        })
-        .catch(error => {
-            window.alert(error);
-            return;
-        });
-        setFormValues({username:"",email:"",phone:"",password:"",confirmPassword:""});
-        setFormErrors(validateForm(formvalues));
-        setisSubmit(true);
-        navigate("/");
-    }
-
-    useEffect(() => {
-        console.log(formErrors);
-        if(Object.keys(formErrors).length === 0 && isSubmit){
-            console.log(formvalues);
+        if (validationError) {
+            // alert(validationError);
+            console.log(validationError);
+            return ;
         }
+        // post this data
+            try {
 
-    },[formErrors, formvalues, isSubmit])
-
-    const validateForm =(values) => {
-
-        const errors={};
+                const response = await axios.post('/guest/register', {
+                formvalues
+                });
         
-        return errors;
+                if (response.data.exists) {
+                // The email exists
+                    dispatch(AuthActions.registerFalse({error:'email already in use'}));
+                } else {
+                // registersation SUCCESS
+                console.log(response.data.error);
+                dispatch(AuthActions.registerSuccess());
+                navigate("/admin/login");
+                }
+        
+                console.log("response:", response.data); // Log the response data
+            } catch (error) {
+                console.error('Error making the request:', error);
+            }
 
-    }
+            
+        };
 
     return (
         <HelmetProvider>
@@ -73,71 +61,96 @@ export function GuestRegister(){
                 </Helmet>
             }
             <section className="vh-100">
-                <div className="container  py-5 h-100">
-                    <div className="row d-flex justify-content-center align-items-center ">
+                <div className="container py-5 h-100">
+                    <div className="row d-flex justify-content-center align-items-center">
                     <div className="col col-xl-10">
-                        <div className="card" style={{borderRadius: '1rem'}}>
+                        <div className="card" style={{ borderRadius: '1rem' }}>
                         <div className="row g-0">
-                            <div className="col-md-6 col-lg-5 d-none d-md-block">
-                            <img src="/imgs/12.jpg"
-                                alt="login form" className="img-fluid h-125" style={{borderRadius: '1rem 1rem 1rem 1rem'}}/>
+                            <div className="col-md-6 col-lg-5 d-grid d-md-block">
+                            <img
+                                src="/imgs/12.jpg"
+                                alt="login form"
+                                className="img-fluid h-75"
+                                style={{ borderRadius: '1rem 1rem 1rem 1rem' }}
+                            />
                             </div>
-                            <div className="col-md-6 col-lg-7 d-flex ">
+                            <div className="col-md-6 col-lg-7 d-flex">
                             <div className="card-body p-4 p-lg-4 text-black">
-
-                                <form  method="POST">
-
+                                <form onSubmit={submitHandler}>
                                 <div className="d-flex align-items-center mb-3 pb-1">
-                                <span className="h1 fw-bold mb-4">Home Away (Guest)</span>
+                                    <h1 className="fw-bold mb-4">Home Away (Guest)</h1>
                                 </div>
-            
-                                <h5 className="fw-medium mb-4 pb-3" style={{letterSpacing: '1px'}}>Sign up your account</h5>
-
+                                <h5 className="fw-medium mb-4 pb-3" style={{ letterSpacing: '1px' }}>
+                                    Sign up your account
+                                </h5>
                                 <div className="form-outline mb-4">
-                                    <input type="text" className="form-control form-control-md" id="username" name="username" 
+                                    <input
+                                    type="text" className="form-control form-control-md"
+                                    id="username" name="username"
+                                    placeholder="Enter your username" 
                                     value={formvalues.username}
-                                    onChange={handleChange}
-                                    placeholder="Enter your username" required />
+                                    onChange={e => setFormValues({...formvalues,username:e.target.value})}
+                                    required
+                                    />
                                 </div>
-            
                                 <div className="form-outline mb-4">
-                                <input type="email" className="form-control form-control-md" id="email" name="email" 
-                                value={formvalues.email}
-                                onChange={handleChange}
-                                placeholder="Email address" required />
+                                    <input
+                                    type="email"
+                                    className="form-control form-control-md" id="email"
+                                    name="email" placeholder="Email address"
+                                    value={formvalues.email}
+                                    onChange={e => setFormValues({...formvalues,email:e.target.value})}
+                                    required
+                                    />
                                 </div>
-
                                 <div className="form-outline mb-4">
-                                    <input type="text" className="form-control form-control-md" id="phone" name="phone" 
+                                    <input
+                                    type="text"
+                                    className="form-control form-control-md"
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="Enter your phone number"
                                     value={formvalues.phone}
-                                    onChange={handleChange}
-                                    placeholder="Enter your phone number" required />
+                                    onChange={e => setFormValues({...formvalues,phone:e.target.value})}
+                                    required
+                                    />
                                 </div>
-            
                                 <div className="form-outline mb-4">
-                                <input type="password" className="form-control form-control-md" id="password" name="password" 
-                                value={formvalues.password}
-                                onChange={handleChange}
-                                placeholder="Password" required />
+                                    <input
+                                    type="password"
+                                    className="form-control form-control-md"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    value={formvalues.password}
+                                    onChange={e => setFormValues({...formvalues,password:e.target.value})}
+                                    required
+                                    />
                                 </div>
-
                                 <div className="form-outline mb-4">
-                                <input type="password" className="form-control form-control-md" id="confirmPassword" name="confirmPassword" 
-                                value={formvalues.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirm your password" required />
+                                    <input
+                                    type="password"
+                                    className="form-control form-control-md"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="Confirm your password"
+                                    value={formvalues.cpassword}
+                                    onChange={e => setFormValues({...formvalues,cpassword:e.target.value})}
+                                    required
+                                    />
                                 </div>
-            
                                 <div className="pt-0 mb-4">
-                                <button className="btn btn-dark btn-md btn-block" type="submit"
-                                onClick={handleSubmit}
-                                >SIGNUP</button>
+                                    <button className="btn btn-dark btn-md btn-block" type="submit">
+                                    SIGNUP
+                                    </button>
                                 </div>
-
-                                <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Already have an account? <a href="/guest/login"
-                                    style={{color: '#393f81'}}>Login</a></p>
+                                <p className="mb-0 pb-lg-2" style={{ color: '#393f81' }}>
+                                    Already have an account?{' '}
+                                    <NavLink to="/guest/login" style={{ color: '#393f81' }}>
+                                    Login
+                                    </NavLink>
+                                </p>
                                 </form>
-
                             </div>
                             </div>
                         </div>
@@ -145,8 +158,9 @@ export function GuestRegister(){
                     </div>
                     </div>
                 </div>
-            </section>
+                </section>
         </HelmetProvider>
     )
 
 }
+

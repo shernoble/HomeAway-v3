@@ -13,6 +13,7 @@ const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
 const Listing=require('../models/Listing');
 const Report=require('../models/Report');
+const { MongoErrorLabel } = require('mongodb');
 
 
 
@@ -27,8 +28,10 @@ exports.guestStartingPage=async(req,res) => {
 }
 exports.guestStartingPagePost=async(req,res) => {
     // redirect
-    let place=req.body.location;
-    let num_guests=req.body.guests;
+    let place=req.body.formvalues.location;
+    let num_guests=req.body.formvalues.guests;
+    console.log(place+" "+num_guests);
+    // res.json("wehere");
     res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests);
 }
 
@@ -39,36 +42,38 @@ exports.guestHomePageFull=async(req,res) => {
     // no filter upon filter
     try{
         let property_type=req.query.property;
-        let val=false;
-        session=req.session;
-        if(session.userid) val=true;
+        // let val=false;
+        // session=req.session;
+        // if(session.userid) val=true;
         console.log("property:"+property_type);
         if(property_type !== undefined && property_type!=="All"){
             Listing.find({ PropertyType: property_type })
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
+                // res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
             })
             .catch(function(error){
-                res.render("error");
-                console.log(error);
+                // res.render("error");
+                return res.status(500).send({message:error.message || "Error Occured"});
             
             })
         }
         if(property_type ==undefined || property_type=="All"){
             Listing.find()
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
+                // res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
+                res.json(results);
             })
             .catch(function(error){
-                res.render("error");
-                console.log(error);
-            
+                // res.render("error");
+                // console.log(error);
+                return res.status(500).send({message:error.message || "Error Occured"});
             })
         }
     }
-    catch(err){
-        console.log("error:"+err);
-        res.render("error");
+    catch(error){
+        // console.log("error:"+err);
+        // res.render("error");
+        return res.status(500).send({message:error.message || "Error Occured"});
     }
 
 }
@@ -113,9 +118,10 @@ exports.guestProfile=async(req,res) => {
 
 exports.guestHomePage=async(req,res) => {
     try{
-        let val=false;
-        session=req.session;
-        if(session.userid) val=true;
+        // res.json("we heree")
+        // let val=false;
+        // session=req.session;
+        // if(session.userid) val=true;
         let place=req.query.location;
         console.log("place:"+place);
         let num_guests=req.query.guests;
@@ -144,57 +150,44 @@ exports.guestHomePage=async(req,res) => {
             Listing.find(query)
             
             .then(function(results){
-                // if(num_guests){
-                const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
-                fetch(url)
-                    .then(response => response.json())
-                        .then(weatherData => {
-                            // console.log(weatherData);
-                            const temp=weatherData.main.temp;
-                            // const temp2 = (temp - 32) * 5 / 9;
-                            const weatherDesc=weatherData.weather[0].description;
-                            const icon=weatherData.weather[0].icon;
-                            const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
-                            res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests,userLoggedIn:val});
-                        })
-                .catch(error => {
-                    console.log("error",error);
-                })
+                console.log("weather shit");
+                res.json(results);
+                // const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
+                // fetch(url)
+                //     .then(response => response.json())
+                //         .then(weatherData => {
+                //             // console.log(weatherData);
+                //             const temp=weatherData.main.temp;
+                //             // const temp2 = (temp - 32) * 5 / 9;
+                //             const weatherDesc=weatherData.weather[0].description;
+                //             const icon=weatherData.weather[0].icon;
+                //             const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
+                //             res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests,userLoggedIn:val});
+                //         })
+                // .catch(error => {
+                //     console.log("error",error);
+                // })
             })
             .catch(function(error){
-                res.render("error");
-                console.log(error);
+                return res.status(500).send({message:error.message || "Error Occured"});
             
             })
         
     }
     catch(err){
-        res.render("error");
-        console.log(err);
+        return res.status(500).send({message:error.message || "Error Occured"});
     }
 }
 
-exports.guestLogin=async(req,res) => {
-    try{
-        const reserve_id=req.query.res_id;
-        console.log("res-d:"+reserve_id);
-        // if(reserve_id !== undefined){
-        //     res.redirect("/guest/reserve/"+reserve_id);
-        // }
-        res.render('guest-login');
-    }
-    catch(err){
-        res.render("error");
-        console.log(err);
-    }
-}
+
 
 exports.guestLoginPost=async(req,res) => {
     try{
         // check login creds
-        const res_id=req.query.res_id;
-        const email=req.body.email;
-        const pass=req.body.password;
+        // const res_id=req.query.res_id;
+        const email=req.body.formvalues.email;
+        const pass=req.body.formvalues.password;
+        console.log(req.body);
         Guest.find({'Email':email})
         .then(function(results){
             if(results.length!=0){
@@ -202,46 +195,28 @@ exports.guestLoginPost=async(req,res) => {
                 bcrypt.compare(pass,results[0].password,function(err,result){
                     
                     if(result){
-                        // create session
-                        session=req.session;
-                        session.userid=email;
-                        console.log(req.session);
-                        res.redirect("/guest/startingPage");
+                        return res.status(200).json({ exists: true,auth:true,error:null });
                     }
                     else{
-                        console.log("incorrect password");
-                        alert("incorrect password");
-                        res.render("guest-login");
+                        return res.status(200).json({ exists: true,error:'incorrect password' });
                     }
                     
                 })
             }
             else{
-                console.log("no such user found");
-                alert("no such user found");
-                res.render("guest-login");
+                return res.status(200).json({ exists: false ,error:'user doesnt exist'});
             }
         })
         .catch(function(error){
-            res.render("error");
-            console.log(error);
+            return res.status(500).send({message:error.message || "Error Occured"});
         })
     }
     catch(err){
-        res.render("error");
-        console.log(err);
+        return res.status(500).send({message:err.message || "Error Occured"});
     }
 }
 
-exports.guestRegister=async(req,res) => {
-    try{
-        res.render('guest-register');
-    }
-    catch(err){
-        res.render("error");
-        console.log(err);
-    }
-}
+
 
 exports.guestRegisterPost=async(req,res) => {
     try{
@@ -258,8 +233,7 @@ exports.guestRegisterPost=async(req,res) => {
             console.log(results);
             if(results.length!=0){
                 // alert to change
-                alert("email already in use");
-                res.redirect("/guest/register");
+                return res.status(200).json({ exists: true,error:'email already in use'});
             }
             else{
                 // register user
@@ -271,7 +245,8 @@ exports.guestRegisterPost=async(req,res) => {
                         password:hash
                     })
                     .then(function(){
-                        res.redirect("/guest/login");
+                        // res.redirect("/guest/login");
+                        return res.status(200).json({ exists: false ,auth:false,error:null});
                     })
                     .catch(function(err){
                         res.status(500).send({message:err.message || "Error Occured"});
@@ -284,8 +259,7 @@ exports.guestRegisterPost=async(req,res) => {
         })
     }
     catch(err){
-        res.render("error");
-        console.log(err);
+        res.status(500).send({message:err.message || "Error Occured"});
     }
 }
 
@@ -338,46 +312,48 @@ exports.guestSearch=async(req,res) => {
 exports.guestReserve=async(req,res) => {
     try{
         // get listingID
+        // const id=req.params.id;
+        // console.log("id:"+id);
+        // session=req.session;
+        // let val=false;
+        // if(session.userid) val=true;
         const id=req.params.id;
-        console.log("id:"+id);
-        session=req.session;
-        let val=false;
-        if(session.userid) val=true;
         Listing.findOne({_id:id})
         .then(function(results){
             // console.log("len:"+results);
-            res.render("guest-reservation",{Listing:results,userLoggedIn:val});
+            // res.render("guest-reservation",{Listing:results,userLoggedIn:val});
+            res.json(results);
         })
         .catch(function(err){
-            // res.status(500).send({message:err.message || "Error Occured"});
-            console.log(err);
-            res.render("error");
+            res.status(500).send({message:err.message || "Error Occured"});
+            // console.log(err);
+            // res.render("error");
 
         })
     }
     catch(err){
-        // res.status(500).send({message:err.message || "Error Occured"});
-        console.log(err);
-        res.render("error");
+        res.status(500).send({message:err.message || "Error Occured"});
+        // console.log(err);
+        // res.render("error");
     }
 }
 
 exports.guestReservePost=async(req,res) => {
     try{
-        console.log("reserve post function");
-        // check sessions
-        session=req.session;
+        // console.log("reserve post function");
+        // // check sessions
+        // session=req.session;
         const id=req.params.id;
         
-        console.log("session user:"+session.userid);
-        if(session.userid){
+        // console.log("session user:"+session.userid);
+        // if(session.userid){
             console.log("hello user");
             
             console.log("reservation"+id);
-            const ci=new Date(req.body.checkin);
-            const co=new Date(req.body.checkout);
-            // console.log('sd:'+req.body.checkin);
-            // console.log('ed:'+co);
+            const ci = new Date(req.body.fromDate).getTime(); // Convert string to Date and get time
+            const co = new Date(req.body.toDate).getTime();
+            console.log('sd:'+req.body.fromDate);
+            console.log('ed:'+co);
 
                 const diffms=Math.abs(co-ci);
                 const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
@@ -385,29 +361,28 @@ exports.guestReservePost=async(req,res) => {
                     .then(function(results){
                         // alert("working");
                         // console.log(results[0]);
-
-                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:req.body.checkin,endDate:req.body.checkout,userLoggedIn:true});
+                        res.json(null);
+                        // res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:req.body.checkin,endDate:req.body.checkout,userLoggedIn:true});
                     })
                     .catch(function(err){
                         // render error page: NOT FOUND ERROR
-                        // res.status(500).send({message:err.message || "Error Occured"});
-                        console.log(err);
-                        res.render("error");
+                        res.status(500).send({message:err.message || "Error Occured"});
+                        // console.log(err);
+                        // res.render("error");
                     });
-        }
-        else{
-            alert("you are required to login first");
-            console.log("user not logged in");
-            const queryParams={
-                reserve_id:id
-            }
-            // pass reservation id and redirect to reservation page on login
-            res.redirect("/guest/login?res_id="+id);
-        }
+        // }
+        // else{
+        //     alert("you are required to login first");
+        //     console.log("user not logged in");
+        //     const queryParams={
+        //         reserve_id:id
+        //     }
+        //     // pass reservation id and redirect to reservation page on login
+        //     res.redirect("/guest/login?res_id="+id);
+        // }
     }
     catch(err){
-        console.log(err);
-        res.render("error");
+        res.status(500).send({message:err.message || "Error Occured"});
     }
 }
 
@@ -421,29 +396,35 @@ exports.guestConfirmBookingPost=async(req,res) => {
         // get data
     // create new booking object
     //add to data
-    session=req.session;
+    // session=req.session;
     // console.log("session user conf:"+session.userid);
-    const { listID,hostID,checkin,checkout }=req.body;
+    const { listing,checkin,checkout }=req.body;
     // console.log('listID:'+listID);
     // console.log('checkin:'+checkin);
     // console.log(host_id);
+
+    // console.log('Listing:', listing);
+    // console.log('Checkin:', checkin);
+    // console.log('Checkout:', checkout);
+
     const date1=new Date(checkin);
     const date2=new Date(checkout);
-    // console.log('date1:'+date1);
+    // console.log('date1:'+checkin);
 
     // console.log(req.query.startDate);
-    // console.log('date2:'+date2);
+    // console.log('date2:'+checkout);
     let flag=false;
+    const listid=listing._id;
 
     const new_booking=new Booking ({
-        ListingID:listID,
-        GuestID:session.userid,
-        HostID:hostID,
-        FromDate:checkin,
-        ToDate:checkout
+        ListingID:listid,
+        GuestID:"101",
+        HostID:listing.host.hostID,
+        FromDate:date1,
+        ToDate:date2,
     });
     
-    Booking.find({ListingID:listID})
+    Booking.find({ListingID:listid})
         .then((documents) => {
             console.log(documents);
             if(documents.length!=0){
@@ -459,8 +440,9 @@ exports.guestConfirmBookingPost=async(req,res) => {
                         // direct back to reservation page
                         // res.redirect(history.back());
                         
-                        console.log("booking dates not available.");
-                        flag=true;
+                        // console.log("booking dates not available.");
+                        return res.json({err:"booking dates not available.",success:false});
+                        // flag=true;
                         break;
                         // res.status(400).json({ success: false });
                         // break;
@@ -469,7 +451,7 @@ exports.guestConfirmBookingPost=async(req,res) => {
                     else if(i==documents.length-1){
                         Booking.create(new_booking)
                         .then(function(){
-                            console.log("inserted booking");
+                            // console.log("inserted booking");
                             // Guest.find({'Email':session.userid})
                             //     .then(function(result){
                             //         // add booking to user profile
@@ -478,16 +460,16 @@ exports.guestConfirmBookingPost=async(req,res) => {
                             //     .catch(function(err){
                             //         res.json({ success: false });
                             //     })
-                            res.json({ success: true });
+                            return res.json({ err:null,success: true });
                             
                             // res.render("congrats",{userLoggedIn:true});
 
 
                         })
                         .catch(function(err){
-                            console.log("error while inserting"+err);
+                            // console.log("error while inserting"+err);
                             // console.log(err);
-                            res.status(400).json({ success: false });
+                            return res.json({err:"error while inserting",success:false});
                             // res.render("error");
                         })
                     }
@@ -495,7 +477,8 @@ exports.guestConfirmBookingPost=async(req,res) => {
                 if(flag){
                     // const previousPage = req.headers.referer || '/';
                     // res.redirect(previousPage);
-                    res.status(400).json({ success: false });
+                    // console.log();
+                    return res.status(400).json({err:"error with server",success:false});
                 }
             }
             
@@ -503,37 +486,28 @@ exports.guestConfirmBookingPost=async(req,res) => {
                 Booking.create(new_booking)
                     .then(function(){
                         console.log("inserted booking");
-                        // res.render("congrats");
-                        // Guest.find({'Email':session.userid})
-                        //         .then(function(result){
-                        //             // add booking to user profile
-                        //             result.Bookings.push(new_booking);
-                        //             res.json({ success: true });
-                        //         })
-                        //         .catch(function(err){
-                        //             res.json({ success: false });
-                        //         })
-                        res.json({success:true});
+
+                        return res.json({success:true});
 
                     })
                     .catch(function(err){
                         console.log("error while inserting"+err);
                         // res.render("error");
-                        res.status(400).json({ success: false });
+                        return res.status(400).json({err:"error while inserting",success:false});
                     })
             }
         })
         .catch((error) => {
-            console.log("error while searching for doc "+error);
+            // console.log("error while searching for doc "+error);
             // res.render("error");
-            res.status(400).json({ success: false });
+            return res.status(400).json({success:false,err:"error while searching for doc "+error});
         })
 
     }
     catch(err){
         console.log(err);
         // res.render("error");
-        res.status(400).json({ success: false });
+        return res.status(400).json({success:false,err:"couldn't complete request, try later"});
     }
 }
 

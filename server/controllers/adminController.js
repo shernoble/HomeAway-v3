@@ -5,8 +5,8 @@ const bcrypt=require("bcrypt");
 const saltRounds=10;
 // const passport=require("passport");
 // const LocalStrategy = require('passport-local').Strategy;
-const myusername="user1";
-const mypassword="mypassword";
+// const myusername="user1";
+// const mypassword="mypassword";
 let session;
 
 const alert=require("alert");
@@ -17,21 +17,12 @@ const Guest=require('../models/Guest');
 const Host=require('../models/Host');
 const Report=require('../models/Report');
 
-
-exports.adminLogin=async(req,res) => {
-    try{
-        // res.render("admin-login");
-    }
-    catch(err){
-        // res.render("error");
-    }
-}
-
 exports.adminLoginPost=async(req,res) => {
     try{
         // check login creds
-        const email=req.body.email;
-        const pass=req.body.password;
+        const email=req.body.formvalues.email;
+        const pass=req.body.formvalues.password;
+        console.log(req.body);
         Admin.find({'Email':email})
         .then(function(results){
             if(results.length!=0){
@@ -39,54 +30,47 @@ exports.adminLoginPost=async(req,res) => {
                 bcrypt.compare(pass,results[0].password,function(err,result){
                     
                     if(result){
-                        // create session
-                        session=req.session;
-                        session.userid=email;
-                        console.log(req.session);
-                        res.redirect("/admin/homepage");
+                        // // create session
+                        // session=req.session;
+                        // session.userid=email;
+                        // console.log(req.session);
+                        // res.redirect("/admin/homepage");
+                        return res.status(200).json({ exists: true,auth:true,error:null });
                     }
                     else{
-                        console.log("incorrect password");
-                        alert("incorrect password");
+                        // console.log("incorrect password");
+                        // alert("incorrect password");
                         // res.render("admin-login");
+                        return res.status(200).json({ exists: false,error:'incorrect password' });
                     }
                     
                 })
             }
             else{
-                console.log("no such user found");
-                alert("no such user found");
+                // console.log("no such user found");
+                // alert("no such user found");
+                return res.status(200).json({ exists: false ,error:'user doesnt exist'});
                 // res.render("admin-login");
             }
         })
         .catch(function(error){
-            // res.render("error");
-            console.log(error);
+            return res.status(500).send({message:err.message || "Error Occured"});
         })
     }
     catch(err){
-        // res.render("error");
-        console.log(err);
+        return res.status(500).send({message:err.message || "Error Occured"});
     }
 }
 
-exports.adminRegister=async(req,res) => {
-    try{
-        // res.render("admin-register");
-    }
-    catch(err){
-        // res.render("error");
-    }
-}
 
 exports.adminRegisterPost=async(req,res) => {
     try{
-        const username=req.body.username;
-            const email=req.body.email;
-            const phone=req.body.phone;
-            const pass=req.body.password;
-            // console.log(username);
-            // console.log(email);
+        const username=req.body.formvalues.username;
+            const email=req.body.formvalues.email;
+            const phone=req.body.formvalues.phone;
+            const pass=req.body.formvalues.password;
+            console.log(username);
+            console.log(email);
     
     
             Admin.find({'Email':email})
@@ -94,8 +78,7 @@ exports.adminRegisterPost=async(req,res) => {
                 console.log(results);
                 if(results.length!=0){
                     // alert to change
-                    alert("email already in use");
-                    res.redirect("/admin/register");
+                    return res.status(200).json({ exists: true,error:'email already in use'});
                 }
                 else{
                     // register user
@@ -107,13 +90,10 @@ exports.adminRegisterPost=async(req,res) => {
                             password:hash
                         })
                         .then(function(){
-                            res.json({
-                                status:"ok"
-                            })
-                            res.redirect("/admin/login");
+                            return res.status(200).json({ exists: false ,auth:false,error:null});
                         })
                         .catch(function(err){
-                            res.status(500).send({message:err.message || "Error Occured"});
+                            return res.status(500).send({message:err.message || "Error Occured"});
                         })
                     
                     })
@@ -123,8 +103,7 @@ exports.adminRegisterPost=async(req,res) => {
             })
         }
         catch(err){
-            // res.render("error");
-            console.log(err);
+            return res.status(500).send({message:err.message || "Error Occured"});
         }
 }
 
@@ -167,14 +146,15 @@ exports.adminProfile=async(req,res) => {
 exports.adminHomePage=async(req,res) => {
     try{
         // check login
-        session=req.session;
-        if(!session.userid) console.log("fre");
-        // res.render('admin-register');
-        // find listings
-        else{
+        // session=req.session;
+        // if(!session.userid) console.log("fre");
+        // // res.render('admin-register');
+        // // find listings
+        // else{
             const results=await Listing.find({});
             // res.render('admin-homepage',{All_listings:results});
-        }
+            res.json(results);
+        // }
         
     }
     catch(err){
@@ -200,13 +180,14 @@ exports.adminGuestlist=async(req,res) => {
 
 exports.adminHostlist=async(req,res) => {
     try{
-        session=req.session;
-        if(!session.userid) console.log("sad");
-        // res.render('admin-register');
-        else{
+        // session=req.session;
+        // if(!session.userid) console.log("sad");
+        // // res.render('admin-register');
+        // else{
             const results=await Host.find({});
             // res.render('admin-hostlist',{hostList:results});
-        }
+            res.json(results);
+        // }
         
     }
     catch(err){
@@ -216,10 +197,11 @@ exports.adminHostlist=async(req,res) => {
 
 exports.adminReports=async(req,res) => {
     try{
-        session=req.session;
+        // session=req.session;
         // if(!session.userid) res.render('admin-register');
         // else{
-        //     const results=await Report.find({});
+            const results=await Report.find({});
+            res.json(results);
         //     res.render('admin-reports',{report:results});
         // }
     }

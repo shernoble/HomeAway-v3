@@ -1,21 +1,27 @@
 
 import { useState,useEffect } from "react"
 // import "../assets/css/startingPage.css"
+import axios from "axios";
+import { useNavigate } from "react-router";
 import { Helmet,HelmetProvider } from "react-helmet-async";
+import { startingPageValidation } from "../gen/loginRegValidations";
+import { guestResultsActions } from "../../store/guestResults";
+import { useDispatch } from "react-redux";
 
 export function GuestStartingPage(){
 
     // usestate
     // const [numguests,setNumGuests]=useState(2);
-    
+    const navigate=useNavigate();
+    const dispatch=useDispatch();
     const [formvalues,setFormValues]=useState({
         location:"Bangalore",
         guests:2,
         fromDate:"",
         toDate:""
     });
-    const [formErrors,setFormErrors]=useState({});
-    const [isSubmit,setisSubmit]=useState(false);
+    // const [formErrors,setFormErrors]=useState({});
+    // const [isSubmit,setisSubmit]=useState(false);
 
     
 
@@ -25,44 +31,28 @@ export function GuestStartingPage(){
         setFormValues({...formvalues,[name]:value});
     }
 
-    function handleSubmit(e){
+    const handleSubmit=async(e) => {
         e.preventDefault();
-        setFormErrors(validateForm(formvalues));
-        setisSubmit(true);
-    }
-
-    useEffect(() => {
-        console.log(formErrors);
-        if(Object.keys(formErrors).length === 0 && isSubmit){
-            console.log(formvalues);
+        const errors=startingPageValidation(formvalues);
+        if(errors){
+            console.log(errors);
+            return;
         }
-    },[formErrors, formvalues, isSubmit])
+        try{
+            // else
+            // handle the submission
+            // store the formvalues as a state in store?
+            const response = await axios.post('http://localhost:5050/guest/startingPage', {
+                    formvalues
+                    });
+            console.log(response.data);
+            dispatch(guestResultsActions.storeResults(response.data));
+            navigate('/guest/homePage');
 
-    const validateForm =(values) => {
-
-        const errors={};
-        console.log("numguests:"+values.numguests);
-        const curr_date=new Date();
-        const curr_time=curr_date.getTime();
-        const start_time=new Date(values.fromDate).getTime();
-        const end_time=new Date(values.toDate).getTime();
-        const num_guests=values.numguests;
-
-        if(start_time<curr_time || end_time<curr_time || start_time>end_time){
-            errors.dates='invalid dates';
         }
-        let num_days=(end_time-start_time)/(1000*60*60*24);
-        
-        console.log("duration:"+num_days);
-        if(num_guests>20){
-            errors.numguests='max number of guests is 20';
+        catch(error){
+            console.log(error);
         }
-        if(num_days>10){
-            errors.dates='duration of stay cannot be more than 10 days';
-    
-        }
-        return errors;
-
     }
 
     return (

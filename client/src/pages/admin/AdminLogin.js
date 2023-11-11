@@ -1,71 +1,76 @@
 
 import { useState,useEffect } from "react"
+import {useDispatch,useSelector} from "react-redux"
+import Alert from "@mui/material";
 // import "../assets/css/startingPage.css"
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { NavLink } from "react-router-dom";
+import { NavLink,useNavigate } from "react-router-dom";
+// import { useDispatch,useSelector } from "react-redux";
+// import { userActions } from "../../store/userSlice";
+import { AuthActions } from "../../store/authSlice";
+import { isEmailValid } from "../gen/loginRegValidations";
+import axios from "axios";
 
 export function AdminLogin(){
-
-    // usestate
-    // const [numguests,setNumGuests]=useState(2);
-    
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
+    const curr_user=useSelector(state => state.auth.user);
+    console.log("user : "+curr_user);
     const [formvalues,setFormValues]=useState({
-        location:"Bangalore",
-        guests:2,
-        fromDate:"",
-        toDate:""
+        email:'',
+        password:''
     });
-    const [formErrors,setFormErrors]=useState({});
-    const [isSubmit,setisSubmit]=useState(false);
+    // const [formErrors,setFormErrors]=useState({});
 
-    
+    const submitHandler = async (event) => {
+        event.preventDefault();
+        // post this data
 
-    const handleChange = (e) => {
-        const {name,value}=e.target;
-        console.log("name:"+name+" val:"+value);
-        setFormValues({...formvalues,[name]:value});
-    }
+            if (!isEmailValid(formvalues.email)) {
+                console.log('Invalid email');
+                // dispatch(AuthActions.loginFalse());
+                return;
+            }
 
-    function handleSubmit(e){
-        e.preventDefault();
-        setFormErrors(validateForm(formvalues));
-        setisSubmit(true);
-    }
+            try {
+                
+                    const response = await axios.post('/admin/login', {
+                    formvalues
+                    });
+            
+                    if (response.data.exists) {
+                    // The username exists
+                    console.log('email exists');
+                    if(response.data.auth){
+                        // console.log("password match");
+                        // LOGIN SUCCESS
+                        dispatch(AuthActions.loginSuccess(formvalues));
+                        navigate("/admin/guestList");
+            
+                    }
+                    else{
+                        // LOGIN FAIL:PASSINCORRECT
+                        console.log(response.data.error);
 
-    useEffect(() => {
-        console.log(formErrors);
-        if(Object.keys(formErrors).length === 0 && isSubmit){
-            console.log(formvalues);
-        }
-
-    },[formErrors, formvalues, isSubmit])
-
-    const validateForm =(values) => {
-
-        const errors={};
-        console.log("numguests:"+values.numguests);
-        const curr_date=new Date();
-        const curr_time=curr_date.getTime();
-        const start_time=new Date(values.fromDate).getTime();
-        const end_time=new Date(values.toDate).getTime();
-        const num_guests=values.numguests;
-
-        if(start_time<curr_time || end_time<curr_time || start_time>end_time){
-            errors.dates='invalid dates';
-        }
-        let num_days=(end_time-start_time)/(1000*60*60*24);
+                        // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
+                    }
+                    } else {
+                    // The username does not exist
+                    // LOGIN FAIL:USERNAME DOESNT EXIST
+                    console.log(response.data.error);
+                    // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
+                    }
+                
         
-        console.log("duration:"+num_days);
-        if(num_guests>20){
-            errors.numguests='max number of guests is 20';
-        }
-        if(num_days>10){
-            errors.dates='duration of stay cannot be more than 10 days';
-    
-        }
-        return errors;
+                    console.log("response:", response.data); // Log the response data
+                // }
+            } 
+            catch (error) {
+                console.error('Error making the request:', error);
+            }
 
-    }
+            
+        };
 
     return (
         <HelmetProvider>
@@ -81,26 +86,33 @@ export function AdminLogin(){
                         <div className="card" style={{borderRadius: '1rem'}}>
                             <div className="row g-0">
                                 <div className="col-md-6 col-lg-5 d-none d-md-block">
-                                <img src="/imgs/12.jpg"
+                                <img src="/imgs/56.jpg"
                                     alt="login form" className="img-fluid h-125" style={{borderRadius: '1rem 1rem 1rem 1rem'}}/>
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex ">
                                 <div className="card-body p-4 p-lg-4 text-black">
 
-                                    <form>
+                                    <form onSubmit={submitHandler}>
 
                                     <div className="d-flex align-items-center mb-3 pb-1 ">
-                                        <span className="h1 fw-bold mb-4">Home Away (Guest)</span>
+                                        <span className="h1 fw-bold mb-4">Home Away (Admin)</span>
+                                        {/* {isAuth && <h3>is authed</h3>} */}
                                     </div>
 
                                     <h5 className="fw-medium mb-4 pb-3" style={{letterSpacing: '1px'}}>Sign into your account</h5>
 
                                     <div className="form-outline mb-4">
-                                        <input type="email" className="form-control form-control-md" id="email" name="email" placeholder="Email address" required />
+                                        <input type="email" className="form-control form-control-md" 
+                                        id="email" name="email" placeholder="Email address"
+                                        value={formvalues.email}
+                                        onChange={e => {setFormValues({...formvalues,email:e.target.value})}} required />
                                     </div>
 
                                     <div className="form-outline mb-4">
-                                        <input type="password" className="form-control form-control-md" id="password" name="password" placeholder="Password" required />
+                                        <input type="password" className="form-control form-control-md" 
+                                        id="password" name="password" placeholder="Password" 
+                                        value={formvalues.password}
+                                        onChange={e => {setFormValues({...formvalues,password:e.target.value})}} required />
                                     </div>
 
                                     <div className="pt-0 mb-4">

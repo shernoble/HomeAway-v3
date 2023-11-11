@@ -5,7 +5,7 @@ import axios from "axios"; // You can use Axios or any other HTTP client to make
 // export const FETCH_DATA_SUCCESS = "FETCH_DATA_SUCCESS";
 // export const FETCH_DATA_FAILURE = "FETCH_DATA_FAILURE";
 
-import { adminHomePageActions } from "../store/adminHomePage";
+import { adminHomePageActions } from "../store/adminGuestPage";
 
 export const fetchData = () => {
     return async (dispatch) => {
