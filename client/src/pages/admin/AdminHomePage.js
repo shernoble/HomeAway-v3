@@ -1,6 +1,4 @@
 import React, { useState,useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchData } from "../../actions/index";
 import "./AdminHomePage.css";
 import "./styles.css";
 import axios from "axios";

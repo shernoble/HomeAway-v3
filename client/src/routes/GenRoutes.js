@@ -1,13 +1,13 @@
 import { Routes,Route } from "react-router-dom";
 
-import { FrontPage } from "../components/FrontPage/FrontPage";
+import { FirstPage } from "../pages/gen/gen-frontPage.js";
 
 
 export function GenRoutes(){
 
     return (
         <Routes>
-            <Route index element={<FrontPage />} />
+            <Route index element={<FirstPage />} />
             <Route path="register" element={<></>} />
             <Route path="logout" element={<></>} />
             <Route path="startingPage" element={<></>} />

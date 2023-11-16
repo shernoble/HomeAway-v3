@@ -6,7 +6,7 @@ import { useNavigate } from "react-router";
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { startingPageValidation } from "../gen/loginRegValidations";
 import { guestResultsActions } from "../../store/guestResults";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function GuestStartingPage(){
 
@@ -22,8 +22,9 @@ export function GuestStartingPage(){
     });
     // const [formErrors,setFormErrors]=useState({});
     // const [isSubmit,setisSubmit]=useState(false);
-
-    
+    const user=useSelector(state => state.auth.user);
+    console.log("Starting:");
+    console.log(user);
 
     const handleChange = (e) => {
         const {name,value}=e.target;

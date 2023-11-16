@@ -1,24 +1,19 @@
-// actions.js
-import axios from "axios"; // You can use Axios or any other HTTP client to make requests to your backend server
 
-// export const FETCH_DATA_REQUEST = "FETCH_DATA_REQUEST";
-// export const FETCH_DATA_SUCCESS = "FETCH_DATA_SUCCESS";
-// export const FETCH_DATA_FAILURE = "FETCH_DATA_FAILURE";
-
-import { adminHomePageActions } from "../store/adminGuestPage";
-
-export const fetchData = () => {
-    return async (dispatch) => {
-        dispatch(adminHomePageActions.fetchDataRequest());
-
-        try {
-        const response = await axios.get("/admin/guestList");
-        const data = response.data;
-
-        dispatch(adminHomePageActions.fetchDataSuccess(data));
-        console.log(data);
-        } catch (error) {
-        dispatch(adminHomePageActions.fetchDataFailure(error));
-        }
-    };
+const setToken = (token) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("lastLoginTime", new Date(Date.now()).getTime());
 };
+
+export const getToken = () => {
+    const now = new Date(Date.now()).getTime();
+    const timeAllowed = 1000 * 60 * 30;
+    const timeSinceLastLogin = now - localStorage.getItem("lastLoginTime");
+    if (timeSinceLastLogin < timeAllowed) {
+        return localStorage.getItem("token");
+    }
+};
+
+const deleteToken = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("lastLoginTime");
+}

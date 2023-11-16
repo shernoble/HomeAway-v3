@@ -1,17 +1,20 @@
 import React from 'react';
 // import { useParams } from 'react-router-dom';
 // import './GuestConfirmation.css'; // Import your CSS file
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
-
+import { AuthActions } from '../../store/authSlice';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 
 export function GuestConfirmation(){
     // const { startDate, endDate } = useParams();
+    const dispatch=useDispatch();
+
     const listing=useSelector(state => state.guestSearch.reservation.listing);
     const checkin=new Date(useSelector(state => state.guestSearch.reservation.fromDate));
     const checkout=new Date(useSelector(state => state.guestSearch.reservation.toDate));
+    const user=useSelector(state => state.auth.user);
 
     const num_days=Math.ceil(Math.abs(checkout-checkin)/(24*60*60*1000));
     // send to backend
@@ -45,6 +48,15 @@ export function GuestConfirmation(){
                 }
                 confDiv.classList.remove('confetti');
             }, 3000);
+            console.log('Booking confirmed!');
+            // add the booking to users' profile-how
+            // use dispatch-dispatch action to update state using booking reducer in the authSLice
+            // auth actions
+            // create a booking object
+            // const booking={
+            //     listingId
+            // }
+            // dispatch(AuthActions.booking({}))
             
         } else {
             bookingMessage.classList.remove('alert-success');
@@ -52,7 +64,6 @@ export function GuestConfirmation(){
             bookingMessage.innerHTML = 'Booking failed. Please try again.';
         }
     
-        console.log('Booking confirmed!');
     };
 
     return (

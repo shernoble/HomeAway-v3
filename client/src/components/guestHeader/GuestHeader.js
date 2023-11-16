@@ -1,8 +1,20 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom"; // Import Link for routing
+import { Link, NavLink ,useNavigate} from "react-router-dom"; // Import Link for routing
 import "./styles.css"
+import { useSelector,useDispatch } from "react-redux";
+import { AuthActions } from "../../store/authSlice";
 
 export function GuestHeader({ userLoggedIn }) {
+
+    // const navigate=useNavigate();
+    const dispatch=useDispatch();
+    const isUser=useSelector(state => state.auth.user);
+
+    const handleLogout = () => {
+        dispatch(AuthActions.logout());
+        // navigate("/guest/login");
+    }
+
     return (
         <div className="navbar header">
         <Link to="/guest/homepagefull">
@@ -24,12 +36,12 @@ export function GuestHeader({ userLoggedIn }) {
                 <i className="far fa-user fa-xl profile-img"></i>
                 </NavLink>
                 <div className="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
-                {userLoggedIn ? (
+                {isUser ? (
                     <>
                     <Link to="/guest/profile" className="dropdown-item">
                         Profile
                     </Link>
-                    <Link to="/guest/logout" className="dropdown-item">
+                    <Link to="/guest/login" onClick={handleLogout} className="dropdown-item">
                         Logout
                     </Link>
                     <Link to="/guest/report" className="dropdown-item">

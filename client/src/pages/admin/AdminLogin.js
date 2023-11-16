@@ -1,12 +1,8 @@
 
-import { useState,useEffect } from "react"
+import { useState} from "react"
 import {useDispatch,useSelector} from "react-redux"
-import Alert from "@mui/material";
-// import "../assets/css/startingPage.css"
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { NavLink,useNavigate } from "react-router-dom";
-// import { useDispatch,useSelector } from "react-redux";
-// import { userActions } from "../../store/userSlice";
 import { AuthActions } from "../../store/authSlice";
 import { isEmailValid } from "../gen/loginRegValidations";
 import axios from "axios";
@@ -20,7 +16,11 @@ export function AdminLogin(){
         email:'',
         password:''
     });
-    // const [formErrors,setFormErrors]=useState({});
+    const [formErrors,setFormErrors]=useState();
+
+    const handleDismiss = () => {
+        setFormErrors(null);
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
@@ -44,21 +44,21 @@ export function AdminLogin(){
                     if(response.data.auth){
                         // console.log("password match");
                         // LOGIN SUCCESS
-                        dispatch(AuthActions.loginSuccess(formvalues));
+                        dispatch(AuthActions.login(formvalues));
                         navigate("/admin/guestList");
             
                     }
                     else{
                         // LOGIN FAIL:PASSINCORRECT
-                        console.log(response.data.error);
 
-                        // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
+                        console.log(response.data.error);
+                        setFormErrors(response.data.error);
                     }
                     } else {
                     // The username does not exist
                     // LOGIN FAIL:USERNAME DOESNT EXIST
-                    console.log(response.data.error);
-                    // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
+                        console.log(response.data.error);
+                        setFormErrors(response.data.error);
                     }
                 
         
@@ -67,6 +67,7 @@ export function AdminLogin(){
             } 
             catch (error) {
                 console.error('Error making the request:', error);
+                setFormErrors(error);
             }
 
             
@@ -96,7 +97,6 @@ export function AdminLogin(){
 
                                     <div className="d-flex align-items-center mb-3 pb-1 ">
                                         <span className="h1 fw-bold mb-4">Home Away (Admin)</span>
-                                        {/* {isAuth && <h3>is authed</h3>} */}
                                     </div>
 
                                     <h5 className="fw-medium mb-4 pb-3" style={{letterSpacing: '1px'}}>Sign into your account</h5>
@@ -121,6 +121,11 @@ export function AdminLogin(){
 
                                     <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <NavLink to="/admin/register"
                                         style={{color: '#393f81'}}>Register here</NavLink></p>
+
+                                    {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {formErrors}
+                                            <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>}
                                     </form>
 
                                 </div>

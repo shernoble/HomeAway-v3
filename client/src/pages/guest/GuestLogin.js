@@ -1,12 +1,8 @@
 
 import { useState } from "react"
-import {useDispatch,useSelector} from "react-redux"
-import Alert from "@mui/material";
-// import "../assets/css/startingPage.css"
+import {useDispatch} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { NavLink,useNavigate } from "react-router-dom";
-// import { useDispatch,useSelector } from "react-redux";
-// import { userActions } from "../../store/userSlice";
 import { AuthActions } from "../../store/authSlice";
 import { isEmailValid } from "../gen/loginRegValidations";
 import axios from "axios";
@@ -14,11 +10,15 @@ import axios from "axios";
 export function GuestLogin(){
     const dispatch=useDispatch();
     const navigate=useNavigate();
-    // const isAuth=useSelector(state => state.auth.isAuthenticated);
     const [formvalues,setFormValues]=useState({
         email:'',
         password:''
     });
+    const [formErrors,setFormErrors]=useState();
+
+    const handleDismiss = () => {
+        setFormErrors(null);
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
@@ -26,7 +26,6 @@ export function GuestLogin(){
             console.log("im here");
             if (!isEmailValid(formvalues.email)) {
                 console.log('Invalid email');
-                dispatch(AuthActions.loginFalse());
                 return;
             }
 
@@ -42,23 +41,21 @@ export function GuestLogin(){
                     // The username exists
                     console.log('email exists');
                     if(response.data.auth){
-                        // console.log("password match");
-                        // LOGIN SUCCESS
-                        dispatch(AuthActions.loginSuccess(formvalues));
+                        dispatch(AuthActions.login(formvalues));
                         navigate("/guest/startingPage");
             
                     }
                     else{
                         // LOGIN FAIL:PASSINCORRECT
                         console.log(response.data.error);
+                        setFormErrors(response.data.error);
 
-                        // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
                     }
                     } else {
                     // The username does not exist
                     // LOGIN FAIL:USERNAME DOESNT EXIST
-                    console.log(response.data.error);
-                    // dispatch(AuthActions.loginFalse({user:formvalues,error:response.data.error}));
+                        console.log(response.data.error);
+                        setFormErrors(response.data.error);
                     }
                 
         
@@ -67,6 +64,7 @@ export function GuestLogin(){
             } 
             catch (error) {
                 console.error('Error making the request:', error);
+                setFormErrors(error);
             }
 
             
@@ -121,6 +119,10 @@ export function GuestLogin(){
 
                                     <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <NavLink to="/guest/register"
                                         style={{color: '#393f81'}}>Register here</NavLink></p>
+                                    {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {formErrors}
+                                            <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>}
                                     </form>
 
                                 </div>

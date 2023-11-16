@@ -1,4 +1,4 @@
-import { Routes,Route } from "react-router-dom";
+import { Routes,Route,Navigate } from "react-router-dom";
 
 import {AdminLogin} from "../pages/admin/AdminLogin";
 import {AdminRegister} from "../pages/admin/AdminRegister";
@@ -6,20 +6,30 @@ import {AdminGuestList} from "../pages/admin/AdminGuestList";
 import { AdminHostList } from "../pages/admin/AdminHostList";
 import { AdminReports } from "../pages/admin/AdminReports";
 import { AdminHomePage } from "../pages/admin/AdminHomePage";
+import { useSelector } from "react-redux";
+
+
 
 export function AdminRoutes(){
+
+    const isUser=useSelector(state => state.auth.user);
 
     return (
         <Routes>
             <Route path="login" element={<AdminLogin/>} />
             <Route path="register" element={<AdminRegister/>} />
-            <Route path="logout" element={<></>} />
-            <Route path="homePage" element={<AdminHomePage/>} />
-            <Route path="guestList" element={<AdminGuestList/>} />
-            <Route path="hostList" element={<AdminHostList/>} />
-            <Route path="reports" element={<AdminReports/>} />
-            <Route path="profile" element={<></>} />
-            <Route path="editPass" element={<></>} />
+
+            {isUser && <Route path="logout" element={<></>} />}
+            {isUser && <Route path="homePage" element={<AdminHomePage/>} />}
+            {isUser && <Route path="guestList" element={<AdminGuestList/>} />}
+            {isUser && <Route path="hostList" element={<AdminHostList/>} />}
+            {isUser && <Route path="reports" element={<AdminReports/>} />}
+            {isUser && <Route path="profile" element={<></>} />}
+            {isUser && <Route path="editPass" element={<></>} />}
+            <Route path="*"
+                element={<Navigate to='login'/>}
+            />
+
         </Routes>
     )
     

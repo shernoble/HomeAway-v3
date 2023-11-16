@@ -4,7 +4,7 @@ import {useDispatch} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { NavLink,useNavigate} from "react-router-dom";
 import { AuthActions } from "../../store/authSlice";
-import { isFormValid } from "../gen/registerValidation";
+import { validRegisteration } from "../gen/loginRegValidations";
 
 import axios from "axios";
 
@@ -18,10 +18,15 @@ export function GuestRegister(){
         password:'',
         cpassword:'',
     });
+    const [formErrors,setFormErrors]=useState();
+
+    const handleDismiss = () => {
+        setFormErrors(null);
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
-        const validationError = isFormValid(formvalues);
+        const validationError = validRegisteration(formvalues);
 
         if (validationError) {
             // alert(validationError);
@@ -37,17 +42,20 @@ export function GuestRegister(){
         
                 if (response.data.exists) {
                 // The email exists
-                    dispatch(AuthActions.registerFalse({error:'email already in use'}));
+                console.log("email already in use");
+                setFormErrors("email already in use");
                 } else {
                 // registersation SUCCESS
+                // directly login
                 console.log(response.data.error);
-                dispatch(AuthActions.registerSuccess());
-                navigate("/admin/login");
+                dispatch(AuthActions.login(formvalues));
+                navigate("/guest/startingPage");
                 }
         
                 console.log("response:", response.data); // Log the response data
             } catch (error) {
                 console.error('Error making the request:', error);
+                setFormErrors(error);
             }
 
             
@@ -150,6 +158,10 @@ export function GuestRegister(){
                                     Login
                                     </NavLink>
                                 </p>
+                                {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {formErrors}
+                                    <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>}
                                 </form>
                             </div>
                             </div>

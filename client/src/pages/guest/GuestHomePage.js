@@ -6,15 +6,18 @@ import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 import { NavLink,Link } from "react-router-dom";
 import axios from "axios";
 
-
 export function GuestHomepage() {
 //   const [weatherLocation, setWeatherLocation] = useState("Bangalore");
 //   const [guests, setGuests] = useState(2);
 //   const [weatherData, setWeatherData] = useState(null);
     const [allListings, setAllListings] = useState(useSelector(state => state.guestSearch.response));
+    const user=useSelector(state => state.auth.user);
+    console.log("home:");
+    console.log(user);
 
     useEffect(() => {
     // Fetch data only if allListings is null
+
     if (allListings === null) {
         axios
         .get('http://localhost:5050/guest/homepagefull')

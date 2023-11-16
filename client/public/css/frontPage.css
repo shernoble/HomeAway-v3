@@ -1,0 +1,74 @@
+body {
+    /* background-color: #909c9b; */
+    background-image: url(https://a0.muscache.com/im/pictures/458e3fa3-3b67-4dc5-87b3-65178557429b.jpg?im_w=1200);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    left: 55%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* display: flex; */
+    /* justify-content: space-around; */
+    /* align-items: center; */
+    /* left: 50%; */
+}
+
+
+
+.colm-form {
+    flex: 0 0 40%;
+    text-align: center;
+}
+
+.colm-form .form-container {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+    max-width: 400px;
+}
+
+.colm-form p {
+    font-size: 14px;
+}
+
+#admin{
+    width: 125px;
+    margin: 20px;
+    background-color: #557571;
+    border: 0px;
+}
+
+#admin:hover{
+    background-color: #92BA92;
+}
+
+#guest{
+    width: 125px;
+    background-color: #557571;
+    border: 0px;
+    border-color: #ffffff;
+}
+
+#guest:hover{
+    background-color: #92BA92;
+}
+
+#host{
+    width: 125px;
+    margin: 20px;
+    margin-bottom: 30px;
+    background-color: #557571;
+    border: 0px;
+}
+
+#host:hover{
+    background-color: #92BA92;
+}
