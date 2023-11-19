@@ -7,6 +7,8 @@ export function AdminGuestList() {
     const [guestList, setGuestList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchterm,setSearchterm]=useState('');
+    const [message,setMessage]=useState();
 
     useEffect(() => {
         // Fetch the guest list when the component mounts
@@ -22,11 +24,28 @@ export function AdminGuestList() {
             });
     }, []); // The empty dependency array ensures this effect runs only once on mount
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:5050/admin/guest/search",{searchterm})
+        .then((response) => {
+            console.log("this is what we received:");
+            console.log(response);
+            if(response.data.results){
+                setGuestList(response.data.results);
+            }
+            else{
+                setMessage('no results');
+                console.log('no results');
+            }
+        })
+    }
+
+    const handleDismiss = () => {
+        setMessage(null);
+    }
+
     const handleDeleteUser = (id) => {
-        // Handle user deletion here, e.g., by making an API request
-        // send to backend to delete user
-        // show modal for confirmation
-        axios.post("/admin/delete/guest", { id })
+        axios.post("http://localhost:5050/admin/delete/guest", { id })
         .then((response) => {
             // Filter out the deleted user from the guestList
             if(response.err){
@@ -62,12 +81,20 @@ export function AdminGuestList() {
         }
             <AdminHeader />
             <div className="search-container">
-                <form action="/admin/guests/search" method="post">
-                    <input type="text" className="searchTerm" name="search_ch" id="search_ch" placeholder="search" />
+                <form onSubmit={handleSearch}>
+                    <input type="text" 
+                    className="searchTerm" name="searchTerm" 
+                    id="searchTerm" placeholder="search" 
+                    value={searchterm}
+                    onChange={e => {setSearchterm(e.target.value)}}
+                    />
                     <button type="submit"><i className="fa fa-search"></i></button>
                 </form>
             </div>
-
+            {message && <div className="smaller-alert alert alert-warning alert-dismissible fade show" role="alert">
+                    {message}
+                    <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>}
             <div className="container">
                 <table className="table">
                     <thead className="thead-dark">

@@ -9,19 +9,16 @@ router.get("/homepage",adminController.adminHomePage);
 router.get("/guestList",adminController.adminGuestlist);
 router.get("/hostList",adminController.adminHostlist);
 router.get("/reports",adminController.adminReports);
-// // router.get("/verification",adminController.adminVerification);
-// router.get("/register",adminController.adminRegister);
-// router.get("/logout",adminController.adminLogout);
-// router.get('/profile',adminController.adminProfile);
 
 
 // middleware=passport.authenticate('local')->local strategy
 router.post("/login",adminController.adminLoginPost);
 router.post("/register",adminController.adminRegisterPost);
 router.post("/delete/:option",adminController.adminDelete);
-router.post("/listings/search",adminController.adminSearchListing);
-router.post("/guests/search",adminController.adminSearchGuest);
-router.post("/hosts/search",adminController.adminSearchHost);
+router.post("/listing/search",adminController.adminSearchListing);
+router.post("/guest/search",adminController.adminSearchGuest);
+router.post("/host/search",adminController.adminSearchHost);
+router.post("/report/search",adminController.adminSearchReport);
 router.post("/editPass",adminController.adminEditPass);
 // router.post("/delete/:user",adminController.adminDeleteUser);
 

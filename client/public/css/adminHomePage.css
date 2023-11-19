@@ -7,6 +7,10 @@
     display: grid;
     grid-template-columns: 1fr 6fr;
 }
+.smaller-alert {
+    max-width: 700px; /* Adjust the width as needed */
+    margin: 0 auto;  /* Center the alert */
+    }
 .house-img{
     height: 130px;
     width: 180px;

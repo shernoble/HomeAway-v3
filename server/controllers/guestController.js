@@ -185,23 +185,7 @@ exports.guestHomePage=async(req,res) => {
             Listing.find(query)
             
             .then(function(results){
-                console.log("weather shit");
                 res.json(results);
-                // const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
-                // fetch(url)
-                //     .then(response => response.json())
-                //         .then(weatherData => {
-                //             // console.log(weatherData);
-                //             const temp=weatherData.main.temp;
-                //             // const temp2 = (temp - 32) * 5 / 9;
-                //             const weatherDesc=weatherData.weather[0].description;
-                //             const icon=weatherData.weather[0].icon;
-                //             const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
-                //             res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests,userLoggedIn:val});
-                //         })
-                // .catch(error => {
-                //     console.log("error",error);
-                // })
             })
             .catch(function(error){
                 return res.status(500).send({message:error.message || "Error Occured"});
@@ -299,9 +283,6 @@ exports.guestRegisterPost=async(req,res) => {
     }
 }
 
-exports.guestLogout=async(req,res) => {
-
-}
 
 exports.guestFilter=async(req,res) => {
     const ch=req.body.choice;
@@ -318,27 +299,23 @@ exports.guestFilter=async(req,res) => {
 
 exports.guestSearch=async(req,res) => {
     try{
-        const item=req.body.searchTerm;
-        session=req.session;
-        let val=false;
-        if(session.userid) val=true;
+        const item=req.body.searchterm;
         console.log("term:"+item);
         // res.render("guest-login");
         Listing.find({$text:{$search:item}})
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
+                if(results.length!=0)
+                return res.json({success:true,results:results});
+                else return res.json({success:false,message:'no results'});
             })
             .catch(function(error){
-                // res.status(500).send({message:error.message || "Error Occured"});
                 console.log(error);
-                res.render("error");
-    
+                return res.json({success:false,message:error.message || "error occured"});
             })
     }
     catch(err){
-        // res.status(500).send({message:err.message || "Error Occured"});
         console.log(err);
-        res.render("error");
+        return res.json({success:false,message:err.message || "error occured"});
     }
 }
 

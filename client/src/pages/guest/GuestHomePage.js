@@ -7,16 +7,15 @@ import { NavLink,Link } from "react-router-dom";
 import axios from "axios";
 
 export function GuestHomepage() {
-//   const [weatherLocation, setWeatherLocation] = useState("Bangalore");
-//   const [guests, setGuests] = useState(2);
-//   const [weatherData, setWeatherData] = useState(null);
     const [allListings, setAllListings] = useState(useSelector(state => state.guestSearch.response));
+    const [filterListings,setFilterListings]=useState([]);
+    const [searchterm,setSearchterm]=useState();
+    const [message,setMessage]=useState();
     const user=useSelector(state => state.auth.user);
     console.log("home:");
     console.log(user);
 
     useEffect(() => {
-    // Fetch data only if allListings is null
 
     if (allListings === null) {
         axios
@@ -33,7 +32,57 @@ export function GuestHomepage() {
     }
     }, [allListings]); 
 
+    const handleSearch=(e) => {
+        e.preventDefault();
+        // send search query for all listings in db
+        // return results
+        axios.post('http://localhost:5050/guest/search',{searchterm})
+        .then((response) => {
+            console.log("this is what we received:");
+            console.log(response);
+            if(response.data.success){
+                setFilterListings(response.data.results);
+            }
+            else{
+                setMessage('no results');
+                console.log('no results');
+            }
+        })
+        
+    }
 
+    const handleHomepage = () => {
+        axios
+        .get('http://localhost:5050/guest/homepagefull')
+        .then((response) => {
+            // Update the state with the fetched data
+            setFilterListings(response.data);
+            // console.log(allListings);
+
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    const handleFilter=(e)=>{
+        // filter based on curr listings
+        e.preventDefault();
+        const propertyType = document.querySelector('input[name="choice"]:checked').value;
+        console.log("value:"+propertyType);
+        if (propertyType !== 'All') {
+            const filteredListings = allListings.filter(element => {
+                return element.PropertyType === propertyType;
+            });
+            setFilterListings(filteredListings);
+        } else {
+            setFilterListings([]); // If 'All' is selected, reset the filter
+        }
+    }
+
+    const handleDismiss=()=>{
+        setMessage(null);
+    }
 
     const closeNav = () => {
         document.getElementById("mySidenav").style.width = "0";
@@ -60,7 +109,7 @@ export function GuestHomepage() {
         <div id="mySidenav" className="sidenav">
             <Link className="closebtn" onClick={closeNav}>&times;</Link>
             <div className="container">
-                <form action="/guest/filter/" method="post">
+                <form onSubmit={handleFilter}>
                     <h5>Property Type</h5>
                     <label>
                     <input type="radio" name="choice" value="All" defaultChecked />
@@ -90,45 +139,36 @@ export function GuestHomepage() {
                     Apply Filters
                     </button>
                 </form>
-                <a href="/guest/homepagefull" className="btn-a" style={{ paddingLeft: '5px', marginRight: '5px' }}>
-                    <input type="button" value="HOME" className="btn btn-outline-light btn2" />
-                </a>
+                <button className="btn btn-outline-success" onClick={handleHomepage}>
+                    View All
+                </button>
             </div>
         </div>
 
 
         <div className="search-container">
-            <form action="/guest/search" method="post">
-            <input type="text" className="searchTerm" name="searchTerm" id="searchTerm" placeholder="search" />
+            <form onSubmit={handleSearch}>
+            <input type="text" className="searchTerm" name="searchTerm" 
+            id="searchTerm" placeholder="search"
+            value={searchterm}
+            onChange={e => {setSearchterm(e.target.value)}}
+            />
             <button type="submit"><i className="fa fa-search"></i></button>
             </form>
         </div>
 
-        <div>
-                {/* <a href="/guest-homepage" class="btn btn-outline-primary go_back">Go Back</a> */}
+            <div>
                 <button className="go_back button" onClick={openNav}>More Options</button>
             </div>
-        {/* <div>
-            {weatherData && (
-            <div className="container mt-4">
-                <div className="row ">
-                <div className="col-md-4">
-                    <div className="card text-center">
-                    <div className="card-body">
-                        <h5 className="card-title">Current Weather in {weatherLocation}</h5>
-                        <h6>{weather_desc}</h6>
-                        <img id="weatherIcon" src={weather_icon} alt="Weather Icon" className="img-fluid mb-3" style={{ maxWidth: "50px" }} />
-                        <p id="temperature" className="h4">{weather_temp} degree celcius</p>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </div>
-            )} */}
 
-            {allListings?.length > 0 ? (
+            {message && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                {message}
+                <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>}
+
+            {filterListings && filterListings.length > 0 ? (
             <section className="houses" id="main">
-                {allListings.map((element) => (
+                {filterListings.map((element) => (
                 
                     <div className="house" key={element._id}>
                         <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
@@ -143,7 +183,21 @@ export function GuestHomepage() {
                 ))}
             </section>
             ) : (
-            <p>no results found!</p>
+                <section className="houses" id="main">
+                {allListings && allListings.map((element) => (
+                
+                    <div className="house" key={element._id}>
+                        <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
+                        <div style={{ backgroundImage: `url(${element.img_url1})`,}} className="house-img"></div>
+                        <p className="title">{element.Title.substring(0, 30) + "..."}</p>
+                        <p className="description">{element.Bedrooms} Bedroom(s), {element.Bathrooms} Bathroom(s)</p>
+                        <p className="location">{element.Address.District}, {element.Address.State}</p>
+                        <p className="pricep">Cost/Night: Rs.{element.CostPerN}</p>
+                        </NavLink>
+                    </div>
+            
+                ))}
+            </section>
             )}
         </HelmetProvider>
         // </div>

@@ -209,58 +209,82 @@ exports.adminReports=async(req,res) => {
 }
 
 exports.adminSearchGuest=async(req,res) => {
-    var x=req.body.search_ch;
-
+    var x=req.body.searchterm;
+    console.log("you have reached backend");
     Guest.find({$text:{$search:x}})
     // console.log(l1);
         .then(function(results){
+            console.log(results.length);
             if(results.length!=0){
                 console.log(results);
+                return res.json({results:results});
             }
             else {
-                alert("no results");
-                res.redirect("/admin/guestList");
+                return res.json({results:null});
             }
         })
         .catch(function(err){
-            console.log(err);
+            res.status(500).send({message:err.message || "Error Occured"});
         });
 }
 
 exports.adminSearchHost=async(req,res) => {
-    var x=req.body.search_ch;
+    var x=req.body.searchterm;
 
     Host.find({$text:{$search:x}})
     // console.log(l1);
         .then(function(results){
             if(results.length!=0){
                 console.log(results);
+                return res.json({results:results});
             }
             else {
-                alert("no results");
-                res.redirect("/admin/hostList");
+                console.log("no results");
+                return res.json({results:null});
             }
         })
         .catch(function(err){
-            console.log(err);
+            res.status(500).send({message:err.message || "Error Occured"});
         });
 }
 
 exports.adminSearchListing=async(req,res) => {
-    var x=req.body.search_ch;
-    console.log(x);
+    var x=req.body.searchterm;
+
     Listing.find({$text:{$search:x}})
+    // console.log(l1);
         .then(function(results){
-            console.log("results:"+results);
             if(results.length!=0){
+                console.log(results);
+                return res.json({results:results});
             }
             else {
-                alert("no results");
-                res.redirect("/admin/homepage");
+                console.log("no results");
+                return res.json({results:null});
             }
         })
         .catch(function(err){
-            console.log(err);
+            res.status(500).send({message:err.message || "Error Occured"});
+        });
+}
+
+exports.adminSearchReport=async(req,res) => {
+    var x=req.body.searchterm;
+
+    Report.find({$text:{$search:x}})
+    // console.log(l1);
+        .then(function(results){
+            if(results.length!=0){
+                console.log(results);
+                return res.json({results:results});
+            }
+            else {
+                console.log("no results");
+                return res.json({results:null});
+            }
+        })
+        .catch(function(err){
+            res.status(500).send({message:err.message || "Error Occured"});
         });
 }
 

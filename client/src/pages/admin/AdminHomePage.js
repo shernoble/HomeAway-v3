@@ -7,6 +7,9 @@ export function AdminHomePage() {
     const [listings, setlistings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchterm,setSearchterm]=useState('');
+    const [message,setMessage]=useState();
+
 
     useEffect(() => {
         // Fetch the guest list when the component mounts
@@ -23,8 +26,42 @@ export function AdminHomePage() {
             });
     }, []); // The empty dependency array ensures this effect runs only once on mount
 
-    const handleDeleteListing = (userId) => {
+    const handleSearch = (e) => {
+        e.preventDefault();
+        axios.post("http://localhost:5050/admin/listing/search",{searchterm})
+        .then((response) => {
+            console.log("this is what we received:");
+            console.log(response);
+            if(response.data.results){
+                setlistings(response.data.results);
+            }
+            else{
+                setMessage('no results');
+                console.log('no results');
+            }
+        })
+    }
+    const handleDismiss = () => {
+        setMessage(null);
+    }
+
+    const handleDeleteListing = (id) => {
         // Handle user deletion here, e.g., by making an API request
+        axios.post("/admin/delete/listing", { id })
+        .then((response) => {
+            // Filter out the deleted user from the guestList
+            if(response.err){
+                console.log(response.err);
+                return;
+            }
+            setlistings((prevReports) =>
+                prevReports.filter((user) => user._id !== id)
+            );
+            
+        })
+        .catch((error) => {
+            console.error("Error deleting report:", error);
+        });
     };
 
     if (isLoading) {
@@ -46,11 +83,20 @@ export function AdminHomePage() {
             <AdminHeader />
             <div className="search-listings">
             <div className="search-container">
-                <form action="/admin/listings/search" method="post">
-                    <input type="text" className="searchTerm" name="search_ch" id="search_ch" placeholder="search" />
+                <form onSubmit={handleSearch}>
+                    <input type="text" 
+                    className="searchTerm" name="searchTerm" 
+                    id="searchTerm" placeholder="search" 
+                    value={searchterm}
+                    onChange={e => {setSearchterm(e.target.value)}}
+                    />
                     <button type="submit"><i className="fa fa-search"></i></button>
                 </form>
             </div>
+            {message && <div className="smaller-alert alert alert-warning alert-dismissible fade show" role="alert">
+                    {message}
+                    <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>}
             {listings ? (
                 listings.map((element) => (
                     <div className="item" key={element._id}>

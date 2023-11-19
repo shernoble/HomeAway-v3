@@ -19,4 +19,6 @@ const reportSchema= new mongoose.Schema({
     }
 });
 
+reportSchema.index({category:"text",subject:"text",description:"text"});
+
 module.exports=mongoose.model('Report',reportSchema);
