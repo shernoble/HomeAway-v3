@@ -6,7 +6,7 @@ import {AdminGuestList} from "../pages/admin/AdminGuestList";
 import { AdminHostList } from "../pages/admin/AdminHostList";
 import { AdminReports } from "../pages/admin/AdminReports";
 import { AdminHomePage } from "../pages/admin/AdminHomePage";
-import { ChangePassword } from "../pages/admin/AdminEditPass";
+import { AdminChangePassword } from "../pages/admin/AdminEditPass";
 import { AdminProfile } from "../pages/admin/AdminProfile";
 import { useSelector } from "react-redux";
 
@@ -27,7 +27,7 @@ export function AdminRoutes(){
             {isUser && <Route path="hostList" element={<AdminHostList/>} />}
             {isUser && <Route path="reports" element={<AdminReports/>} />}
             {isUser && <Route path="profile" element={<AdminProfile/>} />}
-            {isUser && <Route path="editPass" element={<ChangePassword/>} />}
+            {isUser && <Route path="editPass" element={<AdminChangePassword/>} />}
             <Route path="*"
                 element={<Navigate to='login'/>}
             />

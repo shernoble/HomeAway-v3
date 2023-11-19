@@ -16,7 +16,7 @@ export function ChangePassword (){
     const handleChangePassword = async (e) => {
         e.preventDefault();
 
-        const errors=validPasswords({newPassword,confirmPassword});
+        const errors=validPasswords(newPassword,confirmPassword);
         if(errors){
             setMessage(errors);
             setOldPassword('');

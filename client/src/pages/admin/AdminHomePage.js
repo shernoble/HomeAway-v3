@@ -1,8 +1,7 @@
 import React, { useState,useEffect } from "react";
-import "./AdminHomePage.css";
-import "./styles.css";
 import axios from "axios";
 import AdminHeader from "../../components/AdminHeader/AdminHeader";
+import { Helmet,HelmetProvider } from "react-helmet-async";
 
 export function AdminHomePage() {
     const [listings, setlistings] = useState([]);
@@ -37,7 +36,13 @@ export function AdminHomePage() {
     }
 
     return (
-        <>
+        <HelmetProvider>
+        {
+            <Helmet>
+                <link rel="stylesheet" href="/css/adminHomePage.css" />
+                <link rel="stylesheet" href="/css/styles.css" />
+            </Helmet>
+        }
             <AdminHeader />
             <div className="search-listings">
             <div className="search-container">
@@ -100,6 +105,6 @@ export function AdminHomePage() {
                     </form>
                 )}
             </div>
-        </>
+        </HelmetProvider>
     );
 }

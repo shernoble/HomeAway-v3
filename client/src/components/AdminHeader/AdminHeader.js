@@ -1,8 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Import React Router's Link for navigation
 import "./adminHeader.css";
+import { AuthActions } from '../../store/authSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 function AdminHeader() {
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
+    const handleLogout = () => {
+        dispatch(AuthActions.logout());
+        navigate("/");
+    }
+
     return (
         <div>
         <nav className="navbar header">
@@ -45,11 +55,14 @@ function AdminHeader() {
                     Admin Profile
                 </Link>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a className="dropdown-item" href="/admin/logout">
+                    <Link className="dropdown-item" onClick={handleLogout}>
                     Logout
-                    </a>
+                    </Link>
                     <Link to="/admin/profile" className="dropdown-item">
                     View Profile
+                    </Link>
+                    <Link to="/admin/editPass" className="dropdown-item">
+                    Edit Password
                     </Link>
                 </div>
                 </li>

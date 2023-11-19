@@ -3,10 +3,11 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 // import { GuestHeader } from '../../components/guestHeader/GuestHeader';
+import AdminHeader from "../../components/AdminHeader/AdminHeader"
 import { validPasswords } from '../gen/loginRegValidations';
 
 
-export function ChangePassword (){
+export function AdminChangePassword (){
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,7 +17,7 @@ export function ChangePassword (){
     const handleChangePassword = async (e) => {
         e.preventDefault();
 
-        const errors=validPasswords({newPassword,confirmPassword});
+        const errors=validPasswords(newPassword,confirmPassword);
         if(errors){
             setMessage(errors);
             setOldPassword('');
@@ -56,7 +57,7 @@ export function ChangePassword (){
 
     return (
         <>
-        {/* <GuestHeader/> */}
+        <AdminHeader/>
         <div className="container mt-5">
         <h2>Change Password</h2>
         <form onSubmit={handleChangePassword}>
