@@ -25,9 +25,9 @@ const authSlice = createSlice({
                 state.user = storedUser;
             }
         },
-        booking(state, action) {
+        addBooking(state, action) {
         // Call in the confirmation page
-        state.user.bookings = [...state.user.bookings, action.payload];
+        state.user.Bookings = [...state.user.Bookings, action.payload];
         },
         logout(state, action) {
         state.user = null;

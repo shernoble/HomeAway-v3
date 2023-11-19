@@ -23,8 +23,23 @@ export function AdminReports() {
             });
     }, []); // The empty dependency array ensures this effect runs only once on mount
 
-    const handleDeleteUser = (userId) => {
+    const handleDeleteUser = (id) => {
         // Handle user deletion here, e.g., by making an API request
+        axios.post("/admin/delete/report", { id })
+        .then((response) => {
+            // Filter out the deleted user from the guestList
+            if(response.err){
+                console.log(response.err);
+                return;
+            }
+            setreports((prevReports) =>
+                prevReports.filter((user) => user._id !== id)
+            );
+            
+        })
+        .catch((error) => {
+            console.error("Error deleting report:", error);
+        });
     };
 
     if (isLoading) {

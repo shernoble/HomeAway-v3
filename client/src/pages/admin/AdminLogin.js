@@ -28,7 +28,6 @@ export function AdminLogin(){
 
             if (!isEmailValid(formvalues.email)) {
                 console.log('Invalid email');
-                // dispatch(AuthActions.loginFalse());
                 return;
             }
 
@@ -42,9 +41,9 @@ export function AdminLogin(){
                     // The username exists
                     console.log('email exists');
                     if(response.data.auth){
-                        // console.log("password match");
                         // LOGIN SUCCESS
-                        dispatch(AuthActions.login(formvalues));
+                        console.log(response.data.user);
+                        dispatch(AuthActions.login(response.data.user));
                         navigate("/admin/guestList");
             
                     }

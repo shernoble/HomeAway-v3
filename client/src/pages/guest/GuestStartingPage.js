@@ -17,14 +17,18 @@ export function GuestStartingPage(){
     const [formvalues,setFormValues]=useState({
         location:"Bangalore",
         guests:2,
-        fromDate:"",
-        toDate:""
+        // fromDate:"",
+        // toDate:""
     });
-    // const [formErrors,setFormErrors]=useState({});
+    const [formErrors,setFormErrors]=useState();
     // const [isSubmit,setisSubmit]=useState(false);
-    const user=useSelector(state => state.auth.user);
-    console.log("Starting:");
-    console.log(user);
+    // const user=useSelector(state => state.auth.user);
+    // console.log("Starting:");
+    // console.log(user);
+
+    const handleDismiss = () => {
+        setFormErrors(null);
+    }
 
     const handleChange = (e) => {
         const {name,value}=e.target;
@@ -37,6 +41,7 @@ export function GuestStartingPage(){
         const errors=startingPageValidation(formvalues);
         if(errors){
             console.log(errors);
+            setFormErrors(errors);
             return;
         }
         try{
@@ -52,6 +57,7 @@ export function GuestStartingPage(){
 
         }
         catch(error){
+            setFormErrors(error);
             console.log(error);
         }
     }
@@ -87,7 +93,7 @@ export function GuestStartingPage(){
                             onChange={handleChange}
                             />
                         </div>
-                        <div className="form-group">
+                        {/* <div className="form-group">
                             <label htmlFor="fromDate">From Date</label>
                             <input type="date" className="form-control" id="fromDate" name="fromDate"
                             value={formvalues.fromDate}
@@ -100,12 +106,17 @@ export function GuestStartingPage(){
                             value={formvalues.toDate}
                             onChange={handleChange}
                             required />
-                        </div>
+                        </div> */}
                         <button type="submit" 
                         className="btn btn-1">Submit</button>
                         <a href="/guest/homepagefull" className="btn btn-2">Skip</a>
                     </form>
-        </div>
+                    
+            </div>
+            {formErrors && <div className="smaller-alert alert alert-danger alert-dismissible fade show" role="alert">
+                {formErrors}
+                <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>}
         </HelmetProvider>
     )
 

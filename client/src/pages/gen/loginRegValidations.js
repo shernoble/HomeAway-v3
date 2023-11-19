@@ -5,6 +5,27 @@ export const isEmailValid = (email) => {
     return emailRegex.test(email);
 };
 
+export const validPasswords=(newPassword,confirmPassword) => {
+
+
+    const passRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
+
+        if (!(newPassword.length >= 8 && newPassword.length <= 24)) {
+        return 'Password length should be between 8-24';
+        }
+    
+        if (!passRegex.test(newPassword)) {
+        return 'Password must contain minimum eight characters, at least one alphabet, one number, and one special character';
+        }
+    
+        if (newPassword !== confirmPassword) {
+        return "Password doesn't match";
+        }
+    
+        return null; // Indicates that the form is valid
+}
+
+
 
 export const validRegisteration=(formvalues) => {
 
@@ -43,25 +64,25 @@ export const startingPageValidation=(values) => {
         console.log(values);
         // const errors={};
         console.log("numguests:"+values.guests);
-        const curr_date=new Date();
-        const curr_time=curr_date.getTime();
-        const start_time=new Date(values.fromDate).getTime();
-        const end_time=new Date(values.toDate).getTime();
+        // const curr_date=new Date();
+        // const curr_time=curr_date.getTime();
+        // const start_time=new Date(values.fromDate).getTime();
+        // const end_time=new Date(values.toDate).getTime();
         const num_guests=values.guests;
 
-        if(start_time<curr_time || end_time<curr_time || start_time>end_time){
-            return 'invalid dates';
-        }
-        let num_days=(end_time-start_time)/(1000*60*60*24);
+        // if(start_time<curr_time || end_time<curr_time || start_time>end_time){
+        //     return 'invalid dates';
+        // }
+        // let num_days=(end_time-start_time)/(1000*60*60*24);
         
-        console.log("duration:"+num_days);
+        // console.log("duration:"+num_days);
         if(num_guests>20){
             return 'max number of guests is 20';
         }
-        if(num_days>10){
-            return 'duration of stay cannot be more than 10 days';
+        // if(num_days>10){
+        //     return 'duration of stay cannot be more than 10 days';
     
-        }
+        // }
         // form is valid
         return null;
 }

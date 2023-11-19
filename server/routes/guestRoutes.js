@@ -23,6 +23,7 @@ router.post('/confirmBooking',guestController.guestConfirmBookingPost);
 router.post('/search',guestController.guestSearch);
 router.post('/filter',guestController.guestFilter);
 router.post('/report',guestController.guestReportPost);
+router.post('/editPass',guestController.guestEditPass);
 
 
 

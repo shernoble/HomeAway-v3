@@ -17,22 +17,13 @@ export function GuestConfirmation(){
     const user=useSelector(state => state.auth.user);
 
     const num_days=Math.ceil(Math.abs(checkout-checkin)/(24*60*60*1000));
-    // send to backend
-    // check if number of days valid
-    // check if days available
-
-
 
     const handleConfirmation=async() => {
-        // Implement your booking confirmation logic here
-        // event.preventDefault();
-        // post to backend-check availability
-        // have to send curr guest id as well
         const bookingMessage=document.getElementById('booking-message');
         const confetti=document.getElementsByClassName('cp');
         const confDiv=document.getElementById('conf');
-        const response=await axios.post("http://localhost:5050/guest/confirmBooking",{listing,checkin,checkout});
-        console.log("response:"+response.data);
+        const response=await axios.post("http://localhost:5050/guest/confirmBooking",{listing,checkin,checkout,user});
+        console.log(response.data);
         if (response.data.success) {
             // Booking successful
             bookingMessage.classList.remove('alert-danger');
@@ -49,19 +40,21 @@ export function GuestConfirmation(){
                 confDiv.classList.remove('confetti');
             }, 3000);
             console.log('Booking confirmed!');
-            // add the booking to users' profile-how
-            // use dispatch-dispatch action to update state using booking reducer in the authSLice
-            // auth actions
-            // create a booking object
-            // const booking={
-            //     listingId
-            // }
-            // dispatch(AuthActions.booking({}))
-            
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+            const booking=response.data.booking;
+            console.log(booking);
+            dispatch(AuthActions.addBooking({
+                BookingId:booking._id,
+                checkin:new Date(booking.fromDate),
+                checkout:new Date(booking.toDate)
+            }));
         } else {
             bookingMessage.classList.remove('alert-success');
             bookingMessage.classList.add('alert-danger');
-            bookingMessage.innerHTML = 'Booking failed. Please try again.';
+            bookingMessage.innerHTML = response.data.err;
         }
     
     };

@@ -31,7 +31,7 @@ export function AdminRegister(){
 
         if (validationError) {
             // alert(validationError);
-            console.log(validationError);
+            setFormErrors(validationError);
             return ;
         }
         // post this data
@@ -49,7 +49,7 @@ export function AdminRegister(){
                 } else {
                 // registersation SUCCESS
                 // console.log(response.data.error);
-                dispatch(AuthActions.login(formvalues));
+                dispatch(AuthActions.login(response.data.user));
                 navigate("/admin/guestlist");
                 }
         

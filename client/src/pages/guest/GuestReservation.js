@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 export function GuestReservation() {
     const dispatch=useDispatch();
     const navigate = useNavigate();
+    const alertRef=useRef(null);
     const { id } = useParams();
     const [listing, setListing] = useState({});
     const response = useSelector(state => state.guestSearch.response);
@@ -17,6 +18,7 @@ export function GuestReservation() {
         fromDate: response ? response.fromDate : '',
         toDate: response ? response.toDate : '',
     });
+    const [formErrors,setFormErrors]=useState();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -35,11 +37,25 @@ export function GuestReservation() {
         return <p>Loading...</p>;
     }
 
+
     const handleSubmit =async(event) => {
         event.preventDefault();
         const err=reserveValidation(formValues);
         if(err){
             console.log(err);
+            setFormErrors(err);
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+            // console.log(alertRef.current);
+            // if (alertRef.current) {
+            //     console.log('Scrolling...');
+            //     window.scrollTo({
+            //         top: alertRef.current.offsetTop,
+            //         behavior: 'smooth',
+            //     });
+            // }
             return;
         }
         // else continue with submission as post
@@ -53,6 +69,9 @@ export function GuestReservation() {
             console.log(err);
         }
     }
+    const handleDismiss = () => {
+        setFormErrors(null);
+    }
 
     return (
         <HelmetProvider>
@@ -62,6 +81,10 @@ export function GuestReservation() {
             </Helmet>
         }
         <GuestHeader />
+        {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                {formErrors}
+                <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>}
         <div className="container p-4">
             <div className="row">
             {listing && listing.Address && (

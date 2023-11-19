@@ -3,6 +3,11 @@ const mongoose=require("mongoose");
 // const passportLocalMongoose=require("passport-local-mongoose");
 
 const adminSchema= new mongoose.Schema({
+    UserType:{
+        type:String,
+        default:'Admin',
+        immutable:true
+    },
     UserName:{
         type:String,
         required:true

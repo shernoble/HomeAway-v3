@@ -1,6 +1,4 @@
 import React, { useState,useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchData } from "../../actions/index";
 import "./AdminHomePage.css";
 import "./styles.css";
 import axios from "axios";
@@ -25,8 +23,21 @@ export function AdminHostList() {
             });
     }, []); // The empty dependency array ensures this effect runs only once on mount
 
-    const handleDeleteUser = (userId) => {
-        // Handle user deletion here, e.g., by making an API request
+    const handleDeleteUser = (id) => {
+        axios.post("/admin/delete/host", { id })
+        .then((response) => {
+            // Filter out the deleted user from the guestList
+            if(response.err){
+                console.log(response.err);
+                return;
+            }
+            setHostList((prevHostList) =>
+                prevHostList.filter((user) => user._id !== id)
+            );
+        })
+        .catch((error) => {
+            console.error("Error deleting user:", error);
+        });
     };
 
     if (isLoading) {

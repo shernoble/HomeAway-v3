@@ -1,6 +1,6 @@
 
 import { useState } from "react"
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { NavLink,useNavigate } from "react-router-dom";
 import { AuthActions } from "../../store/authSlice";
@@ -14,7 +14,8 @@ export function GuestLogin(){
         email:'',
         password:''
     });
-    const [formErrors,setFormErrors]=useState();
+    const [formErrors,setFormErrors]=useState('');
+    // const authuser=useSelector(state => state.auth.user);
 
     const handleDismiss = () => {
         setFormErrors(null);
@@ -41,7 +42,8 @@ export function GuestLogin(){
                     // The username exists
                     console.log('email exists');
                     if(response.data.auth){
-                        dispatch(AuthActions.login(formvalues));
+                        // console.log(authuser.UserType);
+                        dispatch(AuthActions.login(response.data.user));
                         navigate("/guest/startingPage");
             
                     }
@@ -66,7 +68,7 @@ export function GuestLogin(){
                 console.error('Error making the request:', error);
                 setFormErrors(error);
             }
-
+            console.log("formerrors:"+formErrors);
             
         };
 

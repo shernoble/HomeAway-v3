@@ -18,6 +18,7 @@ export function GuestRegister(){
         password:'',
         cpassword:'',
     });
+
     const [formErrors,setFormErrors]=useState();
 
     const handleDismiss = () => {
@@ -30,32 +31,33 @@ export function GuestRegister(){
 
         if (validationError) {
             // alert(validationError);
-            console.log(validationError);
+            setFormErrors(validationError);
             return ;
         }
         // post this data
             try {
 
-                const response = await axios.post('/guest/register', {
+                const response = await axios.post('http://localhost:5050/guest/register', {
                 formvalues
                 });
         
                 if (response.data.exists) {
                 // The email exists
-                console.log("email already in use");
-                setFormErrors("email already in use");
+                    // dispatch(AuthActions.registerFalse({error:'email already in use'}));
+                    console.log("email already in use");
+                    setFormErrors("email already in use");
                 } else {
                 // registersation SUCCESS
-                // directly login
-                console.log(response.data.error);
-                dispatch(AuthActions.login(formvalues));
+                // console.log(response.data.error);
+                dispatch(AuthActions.login(response.data.user));
                 navigate("/guest/startingPage");
                 }
         
                 console.log("response:", response.data); // Log the response data
             } catch (error) {
                 console.error('Error making the request:', error);
-                setFormErrors(error);
+                const errorMessage = error.response ? error.response.data.message : 'An error occurred';
+                setFormErrors(errorMessage);
             }
 
             
@@ -159,8 +161,8 @@ export function GuestRegister(){
                                     </NavLink>
                                 </p>
                                 {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {formErrors}
-                                    <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            {formErrors}
+                                            <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>}
                                 </form>
                             </div>

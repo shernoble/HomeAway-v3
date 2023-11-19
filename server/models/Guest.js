@@ -1,6 +1,11 @@
 const mongoose=require("mongoose");
 
 const guestSchema= new mongoose.Schema({
+    UserType:{
+        type:String,
+        default:'Guest',
+        immutable:true
+    },
     UserName:{
         type:String,
         required:true,

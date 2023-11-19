@@ -2,8 +2,12 @@ body {
     /* background-color: #909c9b; */
     background-image: url(https://a0.muscache.com/im/pictures/2d502704-5db1-47c0-bfee-3816d04743fb.jpg?im_w=1200);
     background-repeat: no-repeat;
-    background-size: 1500px auto;
+    background-size: 1590px auto;
 }
+.smaller-alert {
+    max-width: 300px; /* Adjust the width as needed */
+    margin: 0 auto;  /* Center the alert */
+  }
 
 .container {
     background-color: #557571;

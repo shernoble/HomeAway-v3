@@ -22,6 +22,7 @@ router.post("/delete/:option",adminController.adminDelete);
 router.post("/listings/search",adminController.adminSearchListing);
 router.post("/guests/search",adminController.adminSearchGuest);
 router.post("/hosts/search",adminController.adminSearchHost);
+router.post("/editPass",adminController.adminEditPass);
 // router.post("/delete/:user",adminController.adminDeleteUser);
 
 
