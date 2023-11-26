@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink ,useNavigate} from "react-router-dom"; // Import Link for routing
+import { Link, NavLink } from "react-router-dom"; // Import Link for routing
 import "./styles.css"
 import { useSelector,useDispatch } from "react-redux";
 import { AuthActions } from "../../store/authSlice";

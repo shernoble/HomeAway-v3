@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
 import { useSelector ,useDispatch} from 'react-redux';
-import { reserveValidation } from '../gen/loginRegValidations';
+import { reserveValidation } from '../../js/loginRegValidations';
 import { guestResultsActions } from '../../store/guestResults';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 
 export function GuestReservation() {
     const dispatch=useDispatch();
     const navigate = useNavigate();
-    const alertRef=useRef(null);
     const { id } = useParams();
     const [listing, setListing] = useState({});
     const response = useSelector(state => state.guestSearch.response);

@@ -1,12 +1,12 @@
 
-import { useState,useEffect } from "react"
+import { useState} from "react"
 // import "../assets/css/startingPage.css"
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { startingPageValidation } from "../gen/loginRegValidations";
+import { startingPageValidation } from "../../js/loginRegValidations";
 import { guestResultsActions } from "../../store/guestResults";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 
 export function GuestStartingPage(){
 
