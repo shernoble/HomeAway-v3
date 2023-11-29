@@ -25,7 +25,7 @@ const guestSchema= new mongoose.Schema({
         required: true
     },
     Bookings:{
-        type:[String],
+        type:[Object],
         required:false
     },
     Reviews:{

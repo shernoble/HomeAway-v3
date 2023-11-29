@@ -6,6 +6,8 @@ import { Helmet,HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
 import { AuthActions } from '../../store/authSlice';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
+import { Policies } from '../../components/CancellationPolicies/Policies';
+import { Payment } from '../../components/PaymentSummary/Payment';
 
 export function GuestConfirmation(){
     // const { startDate, endDate } = useParams();
@@ -96,44 +98,13 @@ export function GuestConfirmation(){
             </div>
         </div>
         <div className="ccl" style={{ height: '150px' }}>
-            <h5>Cancellation policy</h5>
-            <ul>
-            <li>To receive a full refund, guests must cancel at least 30 days before check-in</li>
-            <li>If guests cancel between 7 and 30 days before check-in, host gets paid 50% for all nights</li>
-            <li>If guests cancel less than 7 days before check-in, host gets paid 100% for all nights</li>
-            <li>Guests can also receive a full refund if they cancel within 48 hours of booking, if the cancellation occurs at least 14 days before check-in</li>
-            </ul>
+            <Policies/>
         </div>
         <div className="payment">
-            <h5>Payment Summary</h5>
-            <table className="table1 table table-bordered">
-            <thead className="thead-dark">
-                <tr>
-                <th scope="col" className="heading1">
-                    Details
-                </th>
-                <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <td>number of nights</td>
-                <td>{num_days}</td>
-                </tr>
-                <tr>
-                <td>cost per night</td>
-                <td>{listing.CostPerN}</td>
-                </tr>
-                <tr>
-                <td>taxes</td>
-                <td>5%</td>
-                </tr>
-                <tr>
-                <td>total cost (rupees) </td>
-                <td>{num_days * listing.CostPerN + (num_days * listing.CostPerN * 0.05)}</td>
-                </tr>
-            </tbody>
-            </table>
+            <Payment
+                num_days={num_days}
+                listing={listing}
+            />
         </div>
         <div className="buttons-container">
             

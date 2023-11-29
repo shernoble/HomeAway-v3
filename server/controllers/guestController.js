@@ -65,42 +65,42 @@ exports.guestHomePageFull=async(req,res) => {
 
 }
 
-exports.guestProfile=async(req,res) => {
-    try{
-        // get bookings also
+// exports.guestProfile=async(req,res) => {
+//     try{
+//         // get bookings also
 
-        session=req.session;
-        if(session.userid){
-            // find user and send details
-            Guest.findOne({'Email':session.userid})
-                .then(function(results){
-                    console.log(results);
-                    Booking.find({'GuestID':session.userid})
-                        .then(function(docs){
+//         session=req.session;
+//         if(session.userid){
+//             // find user and send details
+//             Guest.findOne({'Email':session.userid})
+//                 .then(function(results){
+//                     console.log(results);
+//                     Booking.find({'GuestID':session.userid})
+//                         .then(function(docs){
                         
-                            res.render("guest-profile",{profile:results,bookings:docs,userLoggedIn:true});
+//                             res.render("guest-profile",{profile:results,bookings:docs,userLoggedIn:true});
 
-                        })
-                        .catch(function(err){
-                            res.render("error");
-                            console.log(err);
-                        })
-                })
-                .catch(function(error){
-                    res.render("error");
-                    console.log(error);
-                })
+//                         })
+//                         .catch(function(err){
+//                             res.render("error");
+//                             console.log(err);
+//                         })
+//                 })
+//                 .catch(function(error){
+//                     res.render("error");
+//                     console.log(error);
+//                 })
             
-        }
-        else{
-            res.render("guest-login");
-        }
-    }
-    catch(error){
-        res.render("error");
-        console.log(error);
-    }
-}
+//         }
+//         else{
+//             res.render("guest-login");
+//         }
+//     }
+//     catch(error){
+//         res.render("error");
+//         console.log(error);
+//     }
+// }
 
 exports.guestEditPass=async(req,res) => {
     try{
@@ -375,6 +375,7 @@ exports.guestConfirmBookingPost=async(req,res) => {
     const date2=new Date(checkout);
     let flag=false;
     const listid=listing._id;
+    console.log(user);
 
     const new_booking=new Booking ({
         ListingID:listid,
@@ -383,7 +384,7 @@ exports.guestConfirmBookingPost=async(req,res) => {
         FromDate:date1,
         ToDate:date2,
     });
-    
+    // add booking to user bookings array (if success)
     Booking.find({ListingID:listid})
         .then((documents) => {
             console.log(documents);
@@ -403,11 +404,21 @@ exports.guestConfirmBookingPost=async(req,res) => {
                     else if(i==documents.length-1){
                         Booking.create(new_booking)
                         .then(function(){
-                            return res.json({ err:null,success: true,booking:new_booking });
+                            // add booking to user array
+                            Guest.findByIdAndUpdate(user._id, { $push: { Bookings: new_booking } })
+                                .then(() => {
+                                    return res.json({ err: null, success: true, booking: new_booking });
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    return res.json({ err: err, success: false });
+                                });
+                            // return res.json({ err:null,success: true,booking:new_booking });
 
 
                         })
                         .catch(function(err){
+                            console.log(err);
                             return res.json({err:err,success:false});
                         })
                     }
@@ -421,8 +432,15 @@ exports.guestConfirmBookingPost=async(req,res) => {
                 Booking.create(new_booking)
                     .then(function(){
                         console.log("inserted booking");
-
-                        return res.json({err:null,success: true,booking:new_booking });
+                        Guest.findByIdAndUpdate(user._id, { $push: { Bookings: new_booking } })
+                                .then(() => {
+                                    return res.json({ err: null, success: true, booking: new_booking });
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                    return res.json({ err: err, success: false });
+                                });
+                        // return res.json({err:null,success: true,booking:new_booking });
 
                     })
                     .catch(function(err){

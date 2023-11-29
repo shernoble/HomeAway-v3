@@ -1,5 +1,5 @@
 
-import { RegisterForm } from "../../components/RegisterForm.js/RegisterForm"
+import { RegisterForm } from "../../components/RegisterForm/RegisterForm"
 
 export function AdminRegister(){
     const navigateLink="/admin/guestList";

@@ -167,6 +167,7 @@ exports.adminEditPass=async(req,res) => {
 exports.adminHomePage=async(req,res) => {
     try{
             const results=await Listing.find({});
+            // console.log(results);
             res.json(results);
         // }
         

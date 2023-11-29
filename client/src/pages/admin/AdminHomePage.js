@@ -1,69 +1,83 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AdminHeader from "../../components/AdminHeader/AdminHeader";
-import { Helmet,HelmetProvider } from "react-helmet-async";
+import { Modal } from "../../components/modal/confirmModal";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 export function AdminHomePage() {
-    const [listings, setlistings] = useState([]);
+    const [listings, setListings] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [searchterm,setSearchterm]=useState('');
-    const [message,setMessage]=useState();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [message, setMessage] = useState("");
+
+    const [showModal, setShowModal] = useState(false);
+    const [modalContent, setModalContent] = useState({ title: "", desc: "", onConfirm: null });
 
 
     useEffect(() => {
-        // Fetch the guest list when the component mounts
+        // Fetch the listing when the component mounts
         axios
-            .get("/admin/homepage")
-            .then((response) => {
-                console.log(response[0]);
-                setlistings(response.data);
-                setIsLoading(false);
-            })
-            .catch((error) => {
-                setError(error);
-                setIsLoading(false);
-            });
+        .get("/admin/homepage")
+        .then((response) => {
+            setListings(response.data);
+            setIsLoading(false);
+        })
+        .catch((error) => {
+            setError(error);
+            setIsLoading(false);
+        });
     }, []); // The empty dependency array ensures this effect runs only once on mount
 
     const handleSearch = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5050/admin/listing/search",{searchterm})
-        .then((response) => {
-            console.log("this is what we received:");
-            console.log(response);
-            if(response.data.results){
-                setlistings(response.data.results);
-            }
-            else{
-                setMessage('no results');
-                console.log('no results');
-            }
-        })
-    }
+        axios.post("http://localhost:5050/admin/listing/search", { searchTerm }).then((response) => {
+        if (response.data.results) {
+            setListings(response.data.results);
+        } else {
+            setMessage('No results');
+        }
+        });
+    };
+
+    const handleShowModal = (id) => {
+        setModalContent({
+            title: "Delete User",
+            desc: `Are you sure you want to delete ${id} ?`,
+            onConfirm: () => handleDeleteListing(id),
+        });
+        setShowModal(true);
+    };
+    
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     const handleDismiss = () => {
         setMessage(null);
-    }
+    };
+
+    // The handleDeleteListing function remains the same, as it handles the deletion logic
 
     const handleDeleteListing = (id) => {
-        // Handle user deletion here, e.g., by making an API request
-        axios.post("/admin/delete/listing", { id })
+        axios.post("http://localhost:5050/admin/delete/listing", { id })
         .then((response) => {
             // Filter out the deleted user from the guestList
             if(response.err){
                 console.log(response.err);
                 return;
             }
-            setlistings((prevReports) =>
-                prevReports.filter((user) => user._id !== id)
+            setListings((prevListings) =>
+                prevListings.filter((user) => user._id !== id)
             );
+            handleCloseModal();
             
         })
         .catch((error) => {
-            console.error("Error deleting report:", error);
+            console.error("Error deleting list:", error);
         });
+            
     };
-
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -74,21 +88,18 @@ export function AdminHomePage() {
 
     return (
         <HelmetProvider>
-        {
-            <Helmet>
-                <link rel="stylesheet" href="/css/adminHomePage.css" />
-                <link rel="stylesheet" href="/css/styles.css" />
-            </Helmet>
-        }
-            <AdminHeader />
-            <div className="search-listings">
-            <div className="search-container">
+        <Helmet>
+            <link rel="stylesheet" href="/css/adminHomePage.css" />
+            <link rel="stylesheet" href="/css/styles.css" />
+        </Helmet>
+        <AdminHeader />
+        <div className="search-container">
                 <form onSubmit={handleSearch}>
                     <input type="text" 
                     className="searchTerm" name="searchTerm" 
                     id="searchTerm" placeholder="search" 
-                    value={searchterm}
-                    onChange={e => {setSearchterm(e.target.value)}}
+                    value={searchTerm}
+                    onChange={e => {setSearchTerm(e.target.value)}}
                     />
                     <button type="submit"><i className="fa fa-search"></i></button>
                 </form>
@@ -98,59 +109,39 @@ export function AdminHomePage() {
                     <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>}
             {listings ? (
-                listings.map((element) => (
-                    <div className="item" key={element._id}>
-                        <div className="img">
-                            <img className="house-img" src={element.img_url1} alt="house-img" />
-                        </div>
-                        <div className="house-desc">
-                            <h5 style={{ marginBottom: "0" }}>{element.Title}</h5>
-                            <div className="listings-form">
-                                <form action="/admin/delete/listing" method="post">
-                                    <input type="hidden" name="elementID" value={element._id}></input>
-                                    <span>
-                                        <button className="delete-button" data-bs-toggle="modal" data-bs-target={`#modal1${element._id}`} type="button">
-                                            <i className="fa-sharp fa-solid fa-trash"></i>
-                                        </button>
-                                    </span>
-                                    <div className="modal fade" id={`modal1${element._id}`} tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                        <div className="modal-dialog modal-dialog-centered" role="document">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h5 className="modal-title" id="exampleModalLongTitle">Admin Confirmation</h5>
-                                                    <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div className="modal-body">
-                                                    Are you sure you want to delete listing <b>{element._id}</b> ?
-                                                </div>
-                                                <div className="modal-footer">
-                                                    <button type="button" className="btn btn-success" data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" className="btn btn-danger">Confirm</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <p style={{ marginBottom: "0" }}>ListingID : {element._id}</p>
-                            <p style={{ marginBottom: "0" }}>{element.Address.Line1}</p>
-                            <p style={{ marginBottom: "0" }}>{element.Address}</p>
-                        </div>
+            listings.map((element) => (
+                <div className="item" key={element._id} >
+                <div className="img">
+                    <img className="house-img" src={element.img_url1} alt="house-img" />
+                </div>
+                <div className="house-desc">
+                    <h5 style={{ marginBottom: "0" }}>{element.Title}</h5>
+                    <p style={{ marginBottom: "0" }}>ListingID: {element._id}</p>
+                    <p style={{ marginBottom: "0" }}>{element.Address.Line1}</p>
+                    <p style={{ marginBottom: "0" }}>{element.Address.Line2}</p>
+                    <div className="delete-container">
+                        <button
+                            className="delete-button"
+                            onClick={() => handleShowModal(element._id)}
+                        >
+                            <i className="fa-sharp fa-solid fa-trash"></i>
+                        </button>
                     </div>
-                ))
-                ) : (
-                    <div className="noresult">
-                        <h3>No listing(s) found.</h3>
-                    </div>
-                )}
-                {listings && (
-                    <form action="/admin/homepage" method="get">
-                        <button className="btn-outline-primary" type="button">Go Back</button>
-                    </form>
-                )}
+                </div>
+                </div>
+            ))
+            ) : (
+            <div className="noresult">
+                <h3>No listing(s) found.</h3>
             </div>
+            )}
+            <Modal
+                show={showModal}
+                handleClose={handleCloseModal}
+                title={modalContent.title}
+                desc={modalContent.desc}
+                onConfirm={modalContent.onConfirm}
+            />
         </HelmetProvider>
     );
 }

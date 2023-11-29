@@ -33,13 +33,20 @@ export function GuestProfile() {
                                 </thead>
                                 <tbody>
                                     {bookings && bookings.map((element) => {
-                                        const date1 = new Date(element.fromDate);
-                                        const date2 = new Date(element.toDate);
+                                        const date1 = new Date(element.FromDate);
+                                        const date2 = new Date(element.ToDate);
+
+                                        // Check if the dates are valid
+                                        if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
+                                            return null; // Skip rendering if the dates are invalid
+                                        }
+
                                         const new1 = `${date1.getFullYear()}-${String(date1.getMonth() + 1).padStart(2, '0')}-${String(date1.getDate()).padStart(2, '0')}`;
                                         const new2 = `${date2.getFullYear()}-${String(date2.getMonth() + 1).padStart(2, '0')}-${String(date2.getDate()).padStart(2, '0')}`;
+
                                         return (
-                                            <tr key={element.BookingId}>
-                                                <td>{element.BookingId}</td>
+                                            <tr key={element._id}>
+                                                <td>{element._id}</td>
                                                 <td>{new1}</td>
                                                 <td>{new2}</td>
                                             </tr>

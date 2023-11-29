@@ -1,7 +1,9 @@
 import React, { useState,useEffect } from "react";
 import axios from "axios";
-import AdminHeader from "../../components/AdminHeader/AdminHeader";
 import { Helmet,HelmetProvider } from "react-helmet-async";
+
+import { Modal } from "../../components/modal/confirmModal";
+import AdminHeader from "../../components/AdminHeader/AdminHeader";
 
 export function AdminHostList() {
     const [hostList, setHostList] = useState([]);
@@ -9,6 +11,9 @@ export function AdminHostList() {
     const [error, setError] = useState(null);
     const [searchterm,setSearchterm]=useState('');
     const [message,setMessage]=useState();
+
+    const [showModal, setShowModal] = useState(false);
+    const [modalContent, setModalContent] = useState({ title: "", desc: "", onConfirm: null });
 
     useEffect(() => {
         // Fetch the guest list when the component mounts
@@ -40,6 +45,19 @@ export function AdminHostList() {
         })
     }
 
+    const handleShowModal = (userName, userId) => {
+        setModalContent({
+            title: "Delete User",
+            desc: `Are you sure you want to delete ${userName} ?`,
+            onConfirm: () => handleDeleteUser(userId),
+        });
+        setShowModal(true);
+    };
+    
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     const handleDismiss = () => {
         setMessage(null);
     }
@@ -55,6 +73,7 @@ export function AdminHostList() {
             setHostList((prevHostList) =>
                 prevHostList.filter((user) => user._id !== id)
             );
+            handleCloseModal();
         })
         .catch((error) => {
             console.error("Error deleting user:", error);
@@ -114,7 +133,7 @@ export function AdminHostList() {
                                 <td>
                                     <button
                                         className="delete-button"
-                                        onClick={() => handleDeleteUser(element._id)}
+                                        onClick={() => handleShowModal(element.UserName, element._id)}
                                     >
                                         <i className="fa-sharp fa-solid fa-trash"></i>
                                     </button>
@@ -123,6 +142,13 @@ export function AdminHostList() {
                         ))}
                     </tbody>
                 </table>
+                <Modal
+                show={showModal}
+                handleClose={handleCloseModal}
+                title={modalContent.title}
+                desc={modalContent.desc}
+                onConfirm={modalContent.onConfirm}
+            />
             </div>
         </HelmetProvider>
     );
