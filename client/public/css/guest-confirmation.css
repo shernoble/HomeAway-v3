@@ -170,7 +170,7 @@
 .desc-pos{
     margin-left: 20px;
 }
-.payment>h5{
+.payment>h5,.contact>h5{
     margin-left: 80px;
 }
 .pic{
@@ -184,6 +184,7 @@
     height:200px;
     display: grid;
 }
+
 .table1{
     max-width: 1000px;
     margin: 40px auto;
@@ -196,6 +197,7 @@
 }
 .ccl{
     max-width: 1000px;
-    height: 200px;
+    height: 150px;
     
 }
+

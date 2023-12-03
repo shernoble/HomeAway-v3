@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 // import "/css/guestHomepage.css";
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 import { NavLink,Link } from "react-router-dom";
 import axios from "axios";
+
+import { GuestHeader } from "../../components/guestHeader/GuestHeader";
+import { Filters } from "../../components/Filters/Filters";
+
 
 export function GuestHomepage() {
     const [allListings, setAllListings] = useState(useSelector(state => state.guestSearch.response));
     const [filterListings,setFilterListings]=useState([]);
     const [searchterm,setSearchterm]=useState();
     const [message,setMessage]=useState();
-    const user=useSelector(state => state.auth.user);
-    console.log("home:");
-    console.log(user);
+    // const user=useSelector(state => state.auth.user);
+    // console.log("home:");
+    // console.log(user);
 
     useEffect(() => {
 
@@ -108,41 +111,7 @@ export function GuestHomepage() {
 
         <div id="mySidenav" className="sidenav">
             <Link className="closebtn" onClick={closeNav}>&times;</Link>
-            <div className="container">
-                <form onSubmit={handleFilter}>
-                    <h5>Property Type</h5>
-                    <label>
-                    <input type="radio" name="choice" value="All" defaultChecked />
-                    <span>All</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="choice" value="Apartment" />
-                    <span>Apartment</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="choice" value="Villa" />
-                    <span>Villa</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="choice" value="Private House" />
-                    <span>Private House</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="choice" value="Farm House" />
-                    <span>Farm House</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="choice" value="Cottage" />
-                    <span>Cottage</span>
-                    </label>
-                    <button className="btn btn-outline-dark fil_btn" type="submit">
-                    Apply Filters
-                    </button>
-                </form>
-                <button className="btn btn-outline-success" onClick={handleHomepage}>
-                    View All
-                </button>
-            </div>
+            <Filters handleFilter={handleFilter} handleHomepage={handleHomepage}/>
         </div>
 
 

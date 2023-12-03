@@ -50,6 +50,12 @@ export function GuestHeader({ userLoggedIn }) {
                     <Link to="/guest/homepagefull" className="dropdown-item">
                         Home
                     </Link>
+                    <Link to="/AboutUs" className="dropdown-item">
+                        About
+                    </Link>
+                    <Link to="/FAQ" className="dropdown-item">
+                        FAQs
+                    </Link>
                     </>
                 ) : (
                     <>

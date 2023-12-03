@@ -6,8 +6,8 @@ import { Helmet,HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
 import { AuthActions } from '../../store/authSlice';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
-import { Policies } from '../../components/CancellationPolicies/Policies';
-import { Payment } from '../../components/PaymentSummary/Payment';
+import { ListingDetails } from '../../components/ListingDetails/ListingDetails';
+import { Footer } from '../../components/Footer/Footer';
 
 export function GuestConfirmation(){
     // const { startDate, endDate } = useParams();
@@ -46,13 +46,13 @@ export function GuestConfirmation(){
                 top: 0,
                 behavior: 'smooth',
             });
-            const booking=response.data.booking;
-            console.log(booking);
-            dispatch(AuthActions.addBooking({
-                BookingId:booking._id,
-                checkin:new Date(booking.fromDate),
-                checkout:new Date(booking.toDate)
-            }));
+            // const booking=response.data.booking;
+            // console.log(booking);
+            // dispatch(AuthActions.addBooking({
+            //     BookingId:booking._id,
+            //     checkin:new Date(booking.fromDate),
+            //     checkout:new Date(booking.toDate)
+            // }));
         } else {
             bookingMessage.classList.remove('alert-success');
             bookingMessage.classList.add('alert-danger');
@@ -67,6 +67,7 @@ export function GuestConfirmation(){
         {
             <Helmet>
                 <link rel="stylesheet" href="/css/guest-confirmation.css" />
+                <title>Guest-Confirmation</title>
             </Helmet>
         }
         <GuestHeader />
@@ -97,15 +98,14 @@ export function GuestConfirmation(){
             </div>
             </div>
         </div>
-        <div className="ccl" style={{ height: '150px' }}>
-            <Policies/>
-        </div>
-        <div className="payment">
-            <Payment
+        
+        <div >
+            <ListingDetails
                 num_days={num_days}
                 listing={listing}
             />
         </div>
+        
         <div className="buttons-container">
             
             <button type="button" id="confirmBtn" className="confbtn btn btn-outline-success" onClick={handleConfirmation}>
@@ -116,6 +116,7 @@ export function GuestConfirmation(){
             Cancel
             </button>
         </div>
+        <Footer/>
         </HelmetProvider>
     );
 };

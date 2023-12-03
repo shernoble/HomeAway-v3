@@ -2,7 +2,7 @@
 import { useState } from "react"
 import {useDispatch} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { NavLink,useNavigate} from "react-router-dom";
+import { NavLink,useNavigate,Link} from "react-router-dom";
 import { AuthActions } from "../../store/authSlice";
 import { validRegisteration } from "../../js/loginRegValidations";
 
@@ -79,8 +79,8 @@ export function RegisterForm({registerLink,navigateLink,title,loginLink,picno}){
                             <img
                                 src={picno}
                                 alt="login form"
-                                className="img-fluid h-75"
-                                style={{ borderRadius: '1rem 1rem 1rem 1rem' }}
+                                className="img-fluid h-100"
+                                style={{ borderRadius: '1rem 0 0 1rem' }}
                             />
                             </div>
                             <div className="col-md-6 col-lg-7 d-flex">
@@ -159,6 +159,9 @@ export function RegisterForm({registerLink,navigateLink,title,loginLink,picno}){
                                     Login
                                     </NavLink>
                                 </p>
+                                <Link to="/" className="btn btn-outline-success" style={{ float: 'right', marginTop: '20px' }}>
+                                        FrontPage
+                                </Link>
                                 {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
                                             {formErrors}
                                             <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

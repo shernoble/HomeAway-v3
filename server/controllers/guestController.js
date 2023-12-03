@@ -289,13 +289,14 @@ exports.guestFilter=async(req,res) => {
     const place=req.query.location;
     const num_guests=req.query.guests;
     if(place !== undefined && place!="all"){
-        res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
+        // res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
     }
     else{
-        res.redirect("/guest/homepagefull/?property="+ch);
+        // res.redirect("/guest/homepagefull/?property="+ch);
     }
     
 }
+
 
 exports.guestSearch=async(req,res) => {
     try{

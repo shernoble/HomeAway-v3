@@ -1,29 +1,29 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
 
-const Footer = () => {
+export function Footer() {
     const footerStyle = {
-        // width: '100%',
         backgroundColor: '#557571',
         textAlign: 'center',
         padding: '10px',
+        // position: 'fixed',
+        bottom: '0',
+        width: '100%',
     };
+
     const linkStyle = {
         margin: '0 10px',
         textDecoration: 'none',
         color: '#000',
     };
 
-  return (
-    <footer style={footerStyle}>
-        <h3>Home Away</h3>
-        <nav>
-        <Link to="/ContactUs" style={linkStyle}>Contact Us</Link>
-        <Link to="/AboutUs" style={linkStyle}>About Us</Link>
-        <Link to="/Faq" style={linkStyle}>FAQ</Link>
-    </nav>
-  </footer>
-  );
+    return (
+        <footer style={footerStyle}>
+            <h3>Home Away</h3>
+            <nav>
+                <a href="/ContactUs" style={linkStyle}>Contact Us</a>
+                <a href="/AboutUs" style={linkStyle}>About Us</a>
+                <a href="/FAQ" style={linkStyle}>FAQ</a>
+            </nav>
+        </footer>
+    );
 }
-
-export default Footer;

@@ -13,6 +13,7 @@ export function AdminProfile (){
         {
             <Helmet>
                 <link rel="stylesheet" href="/css/profile.css" />
+                <title>Profile-Admin</title>
             </Helmet>
         }
         <AdminHeader/>

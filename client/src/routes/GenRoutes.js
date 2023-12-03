@@ -1,6 +1,9 @@
 import { Routes,Route } from "react-router-dom";
 
-import { FirstPage } from "../pages/gen/gen-frontPage.js";
+import { FirstPage } from "../pages/gen/gen-frontPageNew.js";
+import { ContactUs } from "../pages/gen/ContactUs.js";
+import { AboutUs } from "../pages/gen/AboutUs.js";
+import { FAQ } from "../pages/gen/FAQ.js";
 
 
 export function GenRoutes(){
@@ -8,16 +11,10 @@ export function GenRoutes(){
     return (
         <Routes>
             <Route index element={<FirstPage />} />
-            <Route path="register" element={<></>} />
-            <Route path="logout" element={<></>} />
-            <Route path="startingPage" element={<></>} />
-            <Route path="homePage" element={<></>} />
-            <Route path="homePageFull" element={<></>} />
-            <Route path="report" element={<></>} />
-            <Route path="profile" element={<></>} />
-            <Route path="editPass" element={<></>} />
+            <Route path="AboutUs" element={<AboutUs/>} />
+            <Route path="FAQ" element={<FAQ/>} />
+            <Route path="ContactUs" element={<ContactUs/>} />
         </Routes>
     )
-    
 
 }

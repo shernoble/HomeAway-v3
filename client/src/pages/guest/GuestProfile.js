@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { GuestHeader } from '../../components/guestHeader/GuestHeader';
 import { ProfileCard } from '../../components/profileCard/ProfileCard';
+import { Footer } from '../../components/Footer/Footer';
 import { Link } from 'react-router-dom';
 
 export function GuestProfile() {
@@ -13,6 +14,7 @@ export function GuestProfile() {
         <HelmetProvider>
             <Helmet>
                 <link rel="stylesheet" href="/css/profile.css" />
+                <title>Profile-Guest</title>
             </Helmet>
             <GuestHeader />
             <div className="container mt-5">
@@ -63,6 +65,7 @@ export function GuestProfile() {
                     </div>
                 </div>
             </div>
+            <Footer/>
         </HelmetProvider>
     );
 }

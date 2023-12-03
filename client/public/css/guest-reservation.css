@@ -10,6 +10,9 @@
     font-family: 'Playfair Display', serif;
     color: #F4F4F4;
 }
+.address-desc{
+    margin-left: 20px;
+}
 .selected-house{
     max-width: 1200px;
     margin: 10px auto;
@@ -52,6 +55,7 @@
         min-width: 100%;
     }
 }
+
 .description1{
     margin: 40px auto;
     margin-left: 80px;
@@ -70,7 +74,7 @@ span{
     /* border: 2px solid #F6F1F1; */
     border-radius: 5px;
     max-width: 1300px;
-    margin: 40px 40px 0px 80px;
+    margin: 40px 40px 50px 80px;
     height:200px;
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -85,7 +89,7 @@ span{
     border: 2px solid #F6F1F1;
     flex-basis: 0;/*text shouldnt alter box size*/
     margin: 7px;
-    height: 200px;
+    height: 230px;
 }
 
 .desc-pricing{

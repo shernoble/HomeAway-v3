@@ -2,7 +2,7 @@
 import { useState} from "react"
 import {useDispatch,useSelector} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { NavLink,useNavigate } from "react-router-dom";
+import { NavLink,useNavigate,Link } from "react-router-dom";
 import { AuthActions } from "../../store/authSlice";
 import { isEmailValid } from "../../js/loginRegValidations";
 import axios from "axios";
@@ -87,9 +87,10 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
                             <div className="row g-0">
                                 <div className="col-md-6 col-lg-5 d-none d-md-block">
                                 <img src={picno}
-                                    alt="login form" className="img-fluid h-125" style={{borderRadius: '1rem 1rem 1rem 1rem'}}/>
+                                    alt="login form" className="img-fluid h-100" style={{borderRadius: '1rem 0 0 1rem'}}/>
                                 </div>
                                 <div className="col-md-6 col-lg-7 d-flex ">
+                                
                                 <div className="card-body p-4 p-lg-4 text-black">
 
                                     <form onSubmit={submitHandler}>
@@ -120,7 +121,10 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
 
                                     <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <NavLink to={registerLink}
                                         style={{color: '#393f81'}}>Register here</NavLink></p>
-
+                                    <NavLink to={registerLink} style={{color: '#393f81'}}>Forgot Password?</NavLink>
+                                    <Link to="/" className="btn btn-outline-success" style={{ float: 'right', marginTop: '100px' }}>
+                                        FrontPage
+                                    </Link>
                                     {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
                                             {formErrors}
                                             <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

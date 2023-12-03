@@ -94,6 +94,7 @@ export function AdminHostList() {
             <Helmet>
                 <link rel="stylesheet" href="/css/adminHomePage.css" />
                 <link rel="stylesheet" href="/css/styles.css" />
+                <title>HostList-Admin</title>
             </Helmet>
         }
             <AdminHeader />

@@ -21,6 +21,8 @@ const listingSchema= new mongoose.Schema({
     host:{
         hostID:String,
         hostUserName:String,
+        hostEmail:String,
+        hostPhone:Number,
         hostTotalListingsCount:Number
 
     },

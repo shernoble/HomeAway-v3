@@ -67,9 +67,10 @@ export function GuestStartingPage(){
             {
                 <Helmet>
                     <link rel="stylesheet" href="/css/guest-startingPage.css" />
+                    <title>StartingPage-Guest</title>
                 </Helmet>
             }
-            <br />
+            <br/>
             <div className="container mt-5">
                 <h1 className="mb-4">HomeAway-details</h1>
                     <form onSubmit={handleSubmit}>

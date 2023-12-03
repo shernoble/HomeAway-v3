@@ -6,6 +6,7 @@ import { useSelector ,useDispatch} from 'react-redux';
 import { reserveValidation } from '../../js/loginRegValidations';
 import { guestResultsActions } from '../../store/guestResults';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
+import {Footer} from "../../components/Footer/Footer";
 
 export function GuestReservation() {
     const dispatch=useDispatch();
@@ -47,14 +48,6 @@ export function GuestReservation() {
                 top: 0,
                 behavior: 'smooth',
             });
-            // console.log(alertRef.current);
-            // if (alertRef.current) {
-            //     console.log('Scrolling...');
-            //     window.scrollTo({
-            //         top: alertRef.current.offsetTop,
-            //         behavior: 'smooth',
-            //     });
-            // }
             return;
         }
         // else continue with submission as post
@@ -77,6 +70,7 @@ export function GuestReservation() {
         {
             <Helmet>
             <link rel="stylesheet" href="/css/guest-reservation.css" />
+            <title>Reserve-Guest</title>
             </Helmet>
         }
         <GuestHeader />
@@ -102,7 +96,6 @@ export function GuestReservation() {
             )}
             </div>
         </div>
-
         <div className="house-imgs">
             <section className="selected-house">
             {listing && (
@@ -117,50 +110,101 @@ export function GuestReservation() {
             </section>
         </div>
 
-        <div className="description">
-            <form onSubmit={handleSubmit} className="form-group">
-            {listing && (
-                <div className="desc desc-pricing">
-                <h3>Booking</h3>
-                <input
-                    className="form-control"
-                    type="date"
-                    placeholder="check-in"
-                    name="checkin"
-                    id="checkin"
-                    required
-                    value={formValues.fromDate}
-                    onChange={(e) => setFormValues({ ...formValues, fromDate: e.target.value })}
-                />
-                <input
-                    className="form-control"
-                    type="date"
-                    placeholder="check-out"
-                    name="checkout"
-                    id="checkout"
-                    required
-                    value={formValues.toDate}
-                    onChange={(e) => setFormValues({ ...formValues, toDate: e.target.value })}
-                />
-                <p>Cost Per Night : {listing.CostPerN}</p>
-                <button type="submit" className="reserve-button btn btn-outline-dark">Reserve Stay</button>
+        
+        <div className="container">
+            <div className='row'>
+                {listing && (
+                    <div className="col-lg-3 m-3 card">
+                        <div className="card-body " >
+                            <h5 className="card-title">Booking</h5>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-2">
+                                    <label htmlFor="checkin" className="form-label">Check-in</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        id="checkin"
+                                        placeholder="Check-in"
+                                        required
+                                        value={formValues.fromDate}
+                                        onChange={(e) => setFormValues({ ...formValues, fromDate: e.target.value })}
+                                    />
+                                </div>
+                                <div className="mb-2">
+                                    <label htmlFor="checkout" className="form-label">Check-out</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        id="checkout"
+                                        placeholder="Check-out"
+                                        required
+                                        value={formValues.toDate}
+                                        onChange={(e) => setFormValues({ ...formValues, toDate: e.target.value })}
+                                    />
+                                </div>
+                                <p>Cost Per Night: {listing.CostPerN}</p>
+                                <button type="submit" className="btn btn-outline-dark">Reserve Stay</button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+                <div className='col-lg-8'>
+                    <div className=" m-3 card">
+                        <div className="card-body h-100" >
+                            <h5 style={{ marginBottom: "0" }} className="card-title">Address</h5>
+                            <p style={{ marginBottom: "0" }}>{listing.Address.Line1}</p>
+                            <p>{listing.Address.Line2}, {listing.Address.District}, {listing.Address.Pincode}</p>
+                        </div>
+                    </div>
+
+                    <div className="m-3 card">
+                        <div className="card-body">
+                            <h5 className="card-title">Description</h5>
+                            <p style={{ marginBottom: "0" }}>{listing.Desc1}</p>
+                            <p>{listing.Desc2}</p>
+                        </div>
+                    </div>
+
                 </div>
-            )}
-            </form>
-
-            {listing && listing.Address && (
-            <div className="desc desc-content">
-                <h4 className="address_title">Address:</h4>
-                <p>{listing.Address.Line1}</p>
-                <p>{listing.Address.Line2}, {listing.Address.District}, {listing.Address.Pincode}</p>
-                <h4>Here's a little about our place!</h4>
-                <p>{listing.Desc1}</p>
-                <p>{listing.Desc2}</p>
+                
+                <div className="col-lg-3 m-3 card">
+                    <div className="card-body">
+                        <h5 className="card-title">Facilities</h5>
+                        <ul>
+                            {listing.Facilities.map((facility, index) => {
+                                if (facility === 'wi-fi') {
+                                    return <li key={index}><i class="fa-solid fa-wifi"></i></li>;
+                                }
+                                if (facility === 'TV') {
+                                    return <li key={index}><i class="fa-solid fa-tv"></i></li>;
+                                }
+                                if (facility === 'ac') {
+                                    return <li key={index}>AC</li>;
+                                }
+                                if (facility === 'parking') {
+                                    return <li key={index}><i class="fa-solid fa-square-parking"></i></li>;
+                                }
+                                if (facility === 'pool') {
+                                    return <li key={index}><i class="fa-solid fa-water-ladder"></i></li>;
+                                }
+                                return null; // Return null for facilities other than 'wifi'
+                            })}
+                        </ul>
+                    </div>
+                </div>
+                <div className="col-lg-8 m-3 card">
+                    <div className="card-body">
+                        <h5 className="card-title" style={{textDecoration:'underline'}}>Dos and Donts</h5>
+                        
+                        
+                    </div>
+                </div>
+                
             </div>
-            )}
-
-            <div className="desc desc_facilities"></div>
         </div>
+{/* // ... (remaining code) */}
+
+        <Footer/>
         </HelmetProvider>
     );
 }

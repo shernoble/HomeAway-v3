@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { GuestStartingPage } from "../pages/guest/GuestStartingPage";
 import {GuestLogin} from "../pages/guest/GuestLogin";
 import {GuestRegister} from "../pages/guest/GuestRegister";
-import {GuestHomepage} from "../pages/guest/GuestHomePage";
+import {GuestHomepage} from "../pages/guest/GuestFilterPage";
 import { GuestReservation } from "../pages/guest/GuestReservation";
 import { GuestConfirmation } from "../pages/guest/GuestConfirmation";
 import { GuestProfile } from "../pages/guest/GuestProfile";
@@ -18,7 +18,7 @@ export function GuestRoutes(){
 
     const dispatch=useDispatch();
     const isUser=useSelector(state => state.auth.user);
-    console.log("isuser guest?"+isUser);
+    // console.log("isuser guest?"+isUser);
     useEffect(() => {
         // Fetch user details when the component mounts
         dispatch(AuthActions.getUser());
@@ -31,14 +31,16 @@ export function GuestRoutes(){
         <Routes>
             <Route path="login" element={<GuestLogin />} />
             <Route path="register" element={<GuestRegister/>} />
-            <Route path="logout" element={<></>} />
+
             {isUser &&
                 <Route path="startingPage" element={<GuestStartingPage />} />
             }
             {isUser &&
                 <Route path="homePage" element={<GuestHomepage/>} />
             }
-            {/* <Route path="homePageFull" element={<></>} /> */}
+            {isUser &&
+                <Route path="homepagefull" element={<GuestHomepage/>} />
+            }
             {isUser &&
                 <Route path="reserve/:id" element={<GuestReservation/>} />
             }

@@ -5,7 +5,7 @@ import { AuthActions } from '../../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-function AdminHeader() {
+function AdminHeader({title}) {
     const dispatch=useDispatch();
     const navigate=useNavigate();
     const handleLogout = () => {
@@ -14,7 +14,7 @@ function AdminHeader() {
     }
 
     return (
-        <div>
+        <>
         <nav className="navbar header">
             <h2 className="heading1">HomeAway-admin</h2>
         </nav>
@@ -69,7 +69,7 @@ function AdminHeader() {
             </ul>
             </div>
         </nav>
-        </div>
+        </>
     );
 }
 

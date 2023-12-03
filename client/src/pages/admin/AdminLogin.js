@@ -1,5 +1,6 @@
 
 import { LoginForm } from "../../components/LoginForm/LoginForm";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 export function AdminLogin(){
     const registerLink="/admin/register";
@@ -8,8 +9,12 @@ export function AdminLogin(){
     const title="HomeAway(Admin)";
     const picno="/imgs/56.jpg";
 
+
     return (
-        <>
+        <HelmetProvider>
+            <Helmet>
+                <title>Admin-Login</title>
+            </Helmet>
             <LoginForm 
             registerLink={registerLink} 
             navigateLink={navigateLink} 
@@ -17,7 +22,7 @@ export function AdminLogin(){
             title={title}
             picno={picno}
             />
-        </>
+        </HelmetProvider>
     )
 
 }

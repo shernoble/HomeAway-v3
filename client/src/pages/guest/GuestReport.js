@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { GuestHeader } from '../../components/guestHeader/GuestHeader';
+import { Footer } from '../../components/Footer/Footer';
 import { useSelector } from 'react-redux';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 export function UserReportForm() {
     const [report,setReport]=useState({
@@ -32,7 +34,10 @@ export function UserReportForm() {
     }
 
     return (
-        <>
+        <HelmetProvider>
+        <Helmet>
+            <title>Report-Guest</title>
+        </Helmet>
         <GuestHeader/>
         <div className="container mt-5">
         <h1 className="text-center">User Report Form</h1>
@@ -86,7 +91,8 @@ export function UserReportForm() {
             </button>
         </form>
         </div>
-        </>
+        <Footer/>
+        </HelmetProvider>
     );
 }
 

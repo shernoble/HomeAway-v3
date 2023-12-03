@@ -25,7 +25,7 @@ export function FirstPage(){
                 <Link to="/admin/login" className="dropdown-item">
                     Login
                 </Link>
-                <Link to="/admin/signup" className="dropdown-item">
+                <Link to="/admin/register" className="dropdown-item">
                     Signup
                 </Link>
                 </div>
@@ -44,7 +44,7 @@ export function FirstPage(){
                 <Link to="/guest/login" className="dropdown-item">
                     Login
                 </Link>
-                <Link to="/guest/signup" className="dropdown-item">
+                <Link to="/guest/register" className="dropdown-item">
                     Signup
                 </Link>
                 {/* <Link to="/guest/homepage" className="dropdown-item">
@@ -62,7 +62,7 @@ export function FirstPage(){
                 <Link to="/login" className="dropdown-item">
                     Login
                 </Link>
-                <Link to="/signup" className="dropdown-item">
+                <Link to="/register" className="dropdown-item">
                     Signup
                 </Link>
                 </div>

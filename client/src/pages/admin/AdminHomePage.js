@@ -91,6 +91,7 @@ export function AdminHomePage() {
         <Helmet>
             <link rel="stylesheet" href="/css/adminHomePage.css" />
             <link rel="stylesheet" href="/css/styles.css" />
+            <title>HomePage-Admin</title>
         </Helmet>
         <AdminHeader />
         <div className="search-container">

@@ -95,6 +95,7 @@ export function AdminGuestList() {
             <Helmet>
                 <link rel="stylesheet" href="/css/adminHomePage.css" />
                 <link rel="stylesheet" href="/css/styles.css" />
+                <title>GuestList-Admin</title>
             </Helmet>
         }
             <AdminHeader />

@@ -1,4 +1,5 @@
 
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { RegisterForm } from "../../components/RegisterForm/RegisterForm"
 
 export function GuestRegister(){
@@ -8,14 +9,17 @@ export function GuestRegister(){
     const picno="/imgs/12.jpg";
 
     return (
-        <>
+        <HelmetProvider>
+            <Helmet>
+                <title>Register-Guest</title>
+            </Helmet>
             <RegisterForm 
             registerLink={registerLink}
             navigateLink={navigateLink}
             title={title}
             picno={picno}
             />
-        </>
+        </HelmetProvider>
     )
 
 }

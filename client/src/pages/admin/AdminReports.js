@@ -77,6 +77,7 @@ export function AdminReports() {
             <Helmet>
                 <link rel="stylesheet" href="/css/adminHomePage.css" />
                 <link rel="stylesheet" href="/css/styles.css" />
+                <title>Reports-Admin</title>
             </Helmet>
         }
             <AdminHeader />
