@@ -23,6 +23,12 @@ const hostSchema= new mongoose.Schema({
     password:{
         type: String,
         required: true
+    },
+    listings:{
+        type: [Object],
+    },
+    bookings:{
+        type:[Object]
     }
 });
 

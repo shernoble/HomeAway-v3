@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { GuestStartingPage } from "../pages/guest/GuestStartingPage";
 import {GuestLogin} from "../pages/guest/GuestLogin";
 import {GuestRegister} from "../pages/guest/GuestRegister";
+import { NotFoundPage } from "../pages/gen/NotFound404";
 import {GuestHomepage} from "../pages/guest/GuestFilterPage";
 import { GuestReservation } from "../pages/guest/GuestReservation";
 import { GuestConfirmation } from "../pages/guest/GuestConfirmation";
@@ -56,6 +57,7 @@ export function GuestRoutes(){
             {isUser &&
             <Route path="editPass" element={<ChangePassword/>} />
             }
+            <Route path="NotFound" element={<NotFoundPage/>} />
             {/* not login , redirect to page not found */}
             <Route path="*"
                 element={isUser?<Navigate to='notFound' replace/>:<Navigate to="login" replace />}>              

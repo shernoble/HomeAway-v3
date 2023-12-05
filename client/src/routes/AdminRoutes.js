@@ -8,6 +8,7 @@ import { AdminReports } from "../pages/admin/AdminReports";
 import { AdminHomePage } from "../pages/admin/AdminHomePage";
 import { AdminChangePassword } from "../pages/admin/AdminEditPass";
 import { AdminProfile } from "../pages/admin/AdminProfile";
+import { NotFoundPage } from "../pages/gen/NotFound404";
 import { useSelector } from "react-redux";
 
 
@@ -28,9 +29,10 @@ export function AdminRoutes(){
             {isUser && <Route path="reports" element={<AdminReports/>} />}
             {isUser && <Route path="profile" element={<AdminProfile/>} />}
             {isUser && <Route path="editPass" element={<AdminChangePassword/>} />}
+            <Route path="NotFound" element={<NotFoundPage/>} />
             <Route path="*"
-                element={<Navigate to='login'/>}
-            />
+                element={isUser?<Navigate to='notFound' replace/>:<Navigate to="login" replace />}>              
+            </Route>
 
         </Routes>
     )

@@ -73,7 +73,7 @@ export function GuestStartingPage(){
             <br/>
             <div className="container mt-5">
                 <h1 className="mb-4">HomeAway-details</h1>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} >
                         <div className="form-group">
                             <label htmlFor="location">Location</label>
                             <select className="form-control" id="location" name="location" value={formvalues.location}
@@ -94,23 +94,9 @@ export function GuestStartingPage(){
                             onChange={handleChange}
                             />
                         </div>
-                        {/* <div className="form-group">
-                            <label htmlFor="fromDate">From Date</label>
-                            <input type="date" className="form-control" id="fromDate" name="fromDate"
-                            value={formvalues.fromDate}
-                            onChange={handleChange}
-                            required />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="toDate">To Date</label>
-                            <input type="date" className="form-control" id="toDate" name="toDate"
-                            value={formvalues.toDate}
-                            onChange={handleChange}
-                            required />
-                        </div> */}
                         <button type="submit" 
                         className="btn btn-1">Submit</button>
-                        <a href="/guest/homepagefull" className="btn btn-2">Skip</a>
+                        {/* <a href="/guest/homepagefull" className="btn btn-2">Skip</a> */}
                     </form>
                     
             </div>

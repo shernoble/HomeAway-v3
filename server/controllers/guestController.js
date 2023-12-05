@@ -408,6 +408,16 @@ exports.guestConfirmBookingPost=async(req,res) => {
                             // add booking to user array
                             Guest.findByIdAndUpdate(user._id, { $push: { Bookings: new_booking } })
                                 .then(() => {
+                                    // DONT DELETE
+                                    // find host by id
+                                    // Host.findByIdAndUpdate(listing.host.hostID,{$push:{bookings:new_booking}})
+                                    // .then(() => {
+                                    //     return res.json({ err: null, success: true, booking: new_booking });
+                                    // })
+                                    // .catch((err) => {
+                                    //     console.log("cannot find host id");
+                                    //     return res.json({err:err,success:false});
+                                    // })
                                     return res.json({ err: null, success: true, booking: new_booking });
                                 })
                                 .catch((err) => {
@@ -435,6 +445,15 @@ exports.guestConfirmBookingPost=async(req,res) => {
                         console.log("inserted booking");
                         Guest.findByIdAndUpdate(user._id, { $push: { Bookings: new_booking } })
                                 .then(() => {
+                                    // DONT DELETE
+                                    // Host.findByIdAndUpdate(listing.host.hostID,{$push:{bookings:new_booking}})
+                                    // .then(() => {
+                                    //     return res.json({ err: null, success: true, booking: new_booking });
+                                    // })
+                                    // .catch((err) => {
+                                    //     console.log("cannot find host id");
+                                    //     return res.json({err:err,success:false});
+                                    // })
                                     return res.json({ err: null, success: true, booking: new_booking });
                                 })
                                 .catch((err) => {

@@ -7,6 +7,7 @@ import { reserveValidation } from '../../js/loginRegValidations';
 import { guestResultsActions } from '../../store/guestResults';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 import {Footer} from "../../components/Footer/Footer";
+import { HouseRentalRules } from '../../components/HouseRules/HouseRules';
 
 export function GuestReservation() {
     const dispatch=useDispatch();
@@ -194,9 +195,8 @@ export function GuestReservation() {
                 </div>
                 <div className="col-lg-8 m-3 card">
                     <div className="card-body">
-                        <h5 className="card-title" style={{textDecoration:'underline'}}>Dos and Donts</h5>
-                        
-                        
+                        <h5 className="card-title" style={{textDecoration:'underline'}}>House Rules</h5>
+                        <HouseRentalRules/>
                     </div>
                 </div>
                 
