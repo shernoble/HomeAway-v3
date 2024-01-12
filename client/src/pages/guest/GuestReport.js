@@ -91,7 +91,7 @@ export function UserReportForm() {
             </button>
         </form>
         </div>
-        <Footer/>
+        {/* <Footer/> */}
         </HelmetProvider>
     );
 }

@@ -18,7 +18,7 @@ export function ChangePassword (){
             </Helmet>
             <GuestHeader/>
             <PasswordChangeForm user={user} endpoint={endpoint}/>
-            <Footer/>
+            {/* <Footer/> */}
         </HelmetProvider>
     );
 };

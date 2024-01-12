@@ -1,15 +1,11 @@
 
 import { useState } from "react"
-import {useDispatch} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { NavLink,useNavigate,Link} from "react-router-dom";
-import { AuthActions } from "../../store/authSlice";
+import { useNavigate,Link} from "react-router-dom";
 import { validRegisteration } from "../../js/loginRegValidations";
 
-import axios from "axios";
 
-export function RegisterForm({registerLink,navigateLink,title,loginLink,picno}){
-    const dispatch=useDispatch();
+export function HostRegisterForm({title,picno}){
     const navigate=useNavigate();
     const [formvalues,setFormValues]=useState({
         username:'',
@@ -34,31 +30,7 @@ export function RegisterForm({registerLink,navigateLink,title,loginLink,picno}){
             setFormErrors(validationError);
             return ;
         }
-        // post this data
-            try {
-
-                const response = await axios.post(registerLink, {
-                formvalues
-                });
-        
-                if (response.data.exists) {
-                // The email exists
-                    // dispatch(AuthActions.registerFalse({error:'email already in use'}));
-                    console.log("email already in use");
-                    setFormErrors("email already in use");
-                } else {
-                // registersation SUCCESS
-                // console.log(response.data.error);
-                dispatch(AuthActions.login(response.data.user));
-                navigate(navigateLink);
-                }
-        
-                console.log("response:", response.data); // Log the response data
-            } catch (error) {
-                console.error('Error making the request:', error);
-                setFormErrors(error);
-            }
-
+            navigate('/host/p1h');
             
         };
 
@@ -156,9 +128,9 @@ export function RegisterForm({registerLink,navigateLink,title,loginLink,picno}){
                                 </div>
                                 <p className="mb-0 pb-lg-2" style={{ color: '#393f81' }}>
                                     Already have an account?{' '}
-                                    <NavLink to={loginLink} style={{ color: '#393f81' }}>
+                                    <Link to="/host/login" style={{ color: '#393f81' }}>
                                     Login
-                                    </NavLink>
+                                    </Link>
                                 </p>
                                 <Link to="/" className="btn btn-outline-success" style={{ float: 'right', marginTop: '20px' }}>
                                         FrontPage

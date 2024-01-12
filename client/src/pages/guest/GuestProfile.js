@@ -65,7 +65,7 @@ export function GuestProfile() {
                     </div>
                 </div>
             </div>
-            <Footer/>
+            {/* <Footer/> */}
         </HelmetProvider>
     );
 }
