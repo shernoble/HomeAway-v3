@@ -8,7 +8,7 @@ export function AdminLogin(){
     const postLink="http://localhost:5050/admin/login";
     const title="HomeAway(Admin)";
     const picno="/imgs/56.jpg";
-
+    const role="admin";
 
     return (
         <HelmetProvider>
@@ -21,6 +21,7 @@ export function AdminLogin(){
             postLink={postLink}
             title={title}
             picno={picno}
+            role={role}
             />
         </HelmetProvider>
     )

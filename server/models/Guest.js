@@ -31,6 +31,13 @@ const guestSchema= new mongoose.Schema({
     Reviews:{
         type:[String],
         required:false
+    },
+    Bookmarks:{
+        type:[String]
+    },
+    Verified:{
+        type:Boolean,
+        default:false
     }
 });
 

@@ -7,7 +7,7 @@ import { AuthActions } from "../../store/authSlice";
 import { isEmailValid } from "../../js/loginRegValidations";
 import axios from "axios";
 
-export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
+export function LoginForm({postLink,navigateLink,title,registerLink,picno,role}){
     const dispatch=useDispatch();
     const navigate=useNavigate();
     const curr_user=useSelector(state => state.auth.user);
@@ -42,8 +42,8 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
                     console.log('email exists');
                     if(response.data.auth){
                         // LOGIN SUCCESS
-                        console.log(response.data.user);
-                        dispatch(AuthActions.login(response.data.user));
+                        console.log("role="+role);
+                        dispatch(AuthActions.login({user:response.data.user,role:role}));
                         navigate(navigateLink);
             
                     }
@@ -79,7 +79,7 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
                     <link rel="stylesheet" href="/css/guest-login.css" />
                 </Helmet>
             }
-            <body>
+            {/* <body> */}
             <section className="vh-100">
                 <div className="container  py-5 h-100">
                     <div className="row d-flex justify-content-center align-items-center ">
@@ -140,7 +140,7 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno}){
                     </div>
                 </div>
             </section>
-            </body>
+            {/* </body> */}
         </HelmetProvider>
     )
 

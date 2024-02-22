@@ -7,6 +7,7 @@ export function GuestLogin(){
     const navigateLink="/guest/startingPage";
     const postLink="http://localhost:5050/guest/login";
     const title="HomeAway(Guest)";
+    const role="guest";
     const picno="/imgs/12.jpg";
 
     return (
@@ -20,6 +21,7 @@ export function GuestLogin(){
             postLink={postLink}
             title={title}
             picno={picno}
+            role={role}
             />
         </HelmetProvider>
     )

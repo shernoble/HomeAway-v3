@@ -3,6 +3,8 @@ import axios from "axios";
 import AdminHeader from "../../components/AdminHeader/AdminHeader";
 import { Modal } from "../../components/modal/confirmModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Loading } from "../../components/Loading/Loading";
+import { Footer } from "../../components/Footer2/GFooter";
 
 export function AdminHomePage() {
     const [listings, setListings] = useState([]);
@@ -10,6 +12,7 @@ export function AdminHomePage() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [message, setMessage] = useState("");
+    const [verifiedFilter, setVerifiedFilter] = useState(null); // State to track filter option
 
     const [showModal, setShowModal] = useState(false);
     const [modalContent, setModalContent] = useState({ title: "", desc: "", onConfirm: null });
@@ -57,15 +60,17 @@ export function AdminHomePage() {
         setMessage(null);
     };
 
-    // The handleDeleteListing function remains the same, as it handles the deletion logic
-
     const handleDeleteListing = (id) => {
         axios.post("http://localhost:5050/admin/delete/listing", { id })
         .then((response) => {
             // Filter out the deleted user from the guestList
             if(response.err){
                 console.log(response.err);
+                setMessage("error in deleting guest!try again later");
                 return;
+            }
+            else{
+                setMessage("listing "+id+" deleted!");
             }
             setListings((prevListings) =>
                 prevListings.filter((user) => user._id !== id)
@@ -74,16 +79,52 @@ export function AdminHomePage() {
             
         })
         .catch((error) => {
+            setMessage("error delting guest!Pls try again later!!");
             console.error("Error deleting list:", error);
         });
             
     };
+
+    const handleVerifyListing=(id) => {
+        // console.log("user verified");
+        // send id to back end
+        axios.post("http://localhost:5050/admin/verify/listing", { id })
+            .then((response) => {
+                console.log(response.data.message);
+                if (!response.data.success) {
+                    setMessage("error verifying guest!Pls try again later!");
+                    console.log(response.message);
+                    return;
+                }
+                else{
+                    setMessage("Listing "+id+" is now verified!!");
+                }
+            })
+            .catch((error) => {
+                setMessage("error verifying listing! Pls try again later!");
+                console.error("Error verifying Listing:", error);
+            });
+    }
+
+    // const handleFilterChange = (e) => {
+    //     setVerifiedFilter(e.target.value);
+    // };
+    const handleFilterVerified = (verified) => {
+        setVerifiedFilter(verified);
+    };
+
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     if (error) {
         return <div>Error: {error.message}</div>;
+    }
+
+    // Apply the filter based on the verifiedFilter state
+    let filteredListings = listings;
+    if (verifiedFilter !== null) {
+        filteredListings = listings.filter(listing => listing.Verified === verifiedFilter);
     }
 
     return (
@@ -102,15 +143,35 @@ export function AdminHomePage() {
                     value={searchTerm}
                     onChange={e => {setSearchTerm(e.target.value)}}
                     />
-                    <button type="submit"><i className="fa fa-search"></i></button>
+                    <button type="submit" className="btn btn-success search-btn"><i className="fa fa-search"></i></button>
                 </form>
-            </div>
-            {message && <div className="smaller-alert alert alert-warning alert-dismissible fade show" role="alert">
-                    {message}
-                    <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>}
-            {listings ? (
-            listings.map((element) => (
+        </div>
+        {message && <div className={`smaller-alert alert ${message.includes('error') ? 'alert-danger' : 'alert-success'} alert-dismissible fade show`} role="alert">
+                {message}
+                <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>}
+        <div className="btn-group mb-3 ms-4">
+                <button 
+                    onClick={() => handleFilterVerified(null)} 
+                    className={`btn ${verifiedFilter === null ? 'btn-custom' : 'btn-custom-outline'}`}
+                >
+                    All Listings
+                </button>
+                <button 
+                    onClick={() => handleFilterVerified(true)} 
+                    className={`btn ${verifiedFilter === true ? 'btn-custom' : 'btn-custom-outline'}`}
+                >
+                    Verified Listings
+                </button>
+                <button 
+                    onClick={() => handleFilterVerified(false)} 
+                    className={`btn ${verifiedFilter === false ? 'btn-custom' : 'btn-custom-outline'}`}
+                >
+                    Unverified Listings
+                </button>
+        </div>
+            {filteredListings.length ? (
+            filteredListings.map((element) => (
                 <div className="item" key={element._id} >
                 <div className="img">
                     <img className="house-img" src={element.img_url1} alt="house-img" />
@@ -121,12 +182,29 @@ export function AdminHomePage() {
                     <p style={{ marginBottom: "0" }}>{element.Address.Line1}</p>
                     <p style={{ marginBottom: "0" }}>{element.Address.Line2}</p>
                     <div className="delete-container">
+                    {element.Verified?(
                         <button
-                            className="delete-button"
+                            className="align-btn btn btn-danger delete-button"
                             onClick={() => handleShowModal(element._id)}
                         >
                             <i className="fa-sharp fa-solid fa-trash"></i>
                         </button>
+                    ):(
+                        <>
+                        <button
+                            className="btn btn-success"
+                            onClick={() => handleVerifyListing(element._id)}
+                        >
+                            Verify
+                        </button>
+                        <button
+                            className="delete-button btn btn-danger"
+                            onClick={() => handleShowModal(element.UserName, element._id)}
+                        >
+                            <i className="fa-sharp fa-solid fa-trash"></i>
+                        </button>
+                        </>
+                    )}
                     </div>
                 </div>
                 </div>
@@ -143,6 +221,7 @@ export function AdminHomePage() {
                 desc={modalContent.desc}
                 onConfirm={modalContent.onConfirm}
             />
+            <Footer/>
         </HelmetProvider>
     );
 }

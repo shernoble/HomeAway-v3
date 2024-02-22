@@ -34,7 +34,11 @@ const listingSchema= new mongoose.Schema({
     Bathrooms:Number,
     PropertyType:String,
     RoomType:String,
-    Facilities:[]
+    Facilities:[],
+    Verified:{
+        type:Boolean,
+        default:false
+    }
 });
 
 listingSchema.index({ListingID:'text','Address.District':'text','Address.State':'text',Title:'text'});

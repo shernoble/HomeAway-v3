@@ -6,8 +6,9 @@ import { useSelector ,useDispatch} from 'react-redux';
 import { reserveValidation } from '../../js/loginRegValidations';
 import { guestResultsActions } from '../../store/guestResults';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
-import {Footer} from "../../components/Footer/Footer";
+import {Footer} from "../../components/Footer2/GFooter";
 import { HouseRentalRules } from '../../components/HouseRules/HouseRules';
+import { GuestNav } from '../../components/guestNavbar/GuestNav';
 
 export function GuestReservation() {
     const dispatch=useDispatch();
@@ -75,6 +76,7 @@ export function GuestReservation() {
             </Helmet>
         }
         <GuestHeader />
+        <GuestNav/>
         {formErrors && <div className="alert alert-danger alert-dismissible fade show" role="alert">
                 {formErrors}
                 <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

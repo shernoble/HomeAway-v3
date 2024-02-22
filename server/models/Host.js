@@ -29,6 +29,10 @@ const hostSchema= new mongoose.Schema({
     },
     bookings:{
         type:[Object]
+    },
+    Verified:{
+        type:Boolean,
+        default:false
     }
 });
 

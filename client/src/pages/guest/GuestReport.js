@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { GuestHeader } from '../../components/guestHeader/GuestHeader';
-import { Footer } from '../../components/Footer/Footer';
+import { Footer } from '../../components/Footer2/GFooter';
 import { useSelector } from 'react-redux';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { GuestNav } from '../../components/guestNavbar/GuestNav';
 
 export function UserReportForm() {
     const [report,setReport]=useState({
@@ -11,20 +12,25 @@ export function UserReportForm() {
         subject:null,
         description:'',
     });
+    const [message, setMessage] = useState(null);
     const user=useSelector(state => state.auth.user);
     
-    const handleSubmit=(event) => {
+    const handleSubmit=async(event) => {
         event.preventDefault();
+        // const reportMessage=document.getElementById('report-message');
         // post it to backend
-        const response=axios.post("/guest/report",{report:report,user:user});
-        if(response.err){
-            // display err
-            console.log(response.err);
+        const response=await axios.post("/guest/report",{report:report,user:user});
+        console.log(response.data);
+        if(!response.data.success){
+            // report not submitted
+            console.log(response.data.err);
+            setMessage("an error occured while submitting report, please try again!:");
         }
         else{
             // success
             // display success msg
             console.log("report submitted");
+            setMessage("report submission successfull!!");
             setReport({
                 category:'host complaint',
                 subject:null,
@@ -39,8 +45,15 @@ export function UserReportForm() {
             <title>Report-Guest</title>
         </Helmet>
         <GuestHeader/>
+        <GuestNav/>
+        {message && (
+                <div className={`mt-3 alert ${message.includes('success') ? 'alert-success' : 'alert-danger'}`} role="alert">
+                    {message}
+                </div>
+        )}
+        {/* <div className="alert" id="report-message"></div> */}
         <div className="container mt-5">
-        <h1 className="text-center">User Report Form</h1>
+        <h1 className="text-center">Guest Report Form</h1>
         <form onSubmit={handleSubmit}>
             <div className="mb-3">
             <label htmlFor="category" className="form-label">
@@ -91,7 +104,8 @@ export function UserReportForm() {
             </button>
         </form>
         </div>
-        {/* <Footer/> */}
+        
+        <Footer/>
         </HelmetProvider>
     );
 }

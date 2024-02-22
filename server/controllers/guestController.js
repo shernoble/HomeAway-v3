@@ -500,11 +500,11 @@ exports.guestReportPost=async(req,res) => {
         Report.create(new_report)
             .then(function(){
                 // console.log("submited hehe");
-                return res.json({error:null});
+                return res.json({success:true,error:null});
             })
             .catch(function(err){
                 console.log(err);
-                return res.json({err:err});
+                return res.json({success:false,err:err});
             })
         console.log("we here");
     }

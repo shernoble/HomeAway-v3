@@ -3,13 +3,21 @@ import { useSelector } from "react-redux";
 // import "/css/guestHomepage.css";
 import { Helmet,HelmetProvider } from "react-helmet-async";
 import { NavLink,Link } from "react-router-dom";
+import {Loading} from '../../components/Loading/Loading'; // Import your loader component
+
 import axios from "axios";
 
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
+import { GuestNav } from "../../components/guestNavbar/GuestNav";
 import { Filters } from "../../components/Filters/Filters";
+import { Footer } from "../../components/Footer/Footer";
+
+
+// DO NOT CHANGE-ITS NOT USED -USE GUESTFILTERPAGE
 
 
 export function GuestHomepage() {
+    const [isLoading, setIsLoading] = useState(true);
     const [allListings, setAllListings] = useState(useSelector(state => state.guestSearch.response));
     const [filterListings,setFilterListings]=useState([]);
     const [searchterm,setSearchterm]=useState();
@@ -19,6 +27,15 @@ export function GuestHomepage() {
     // console.log(user);
 
     useEffect(() => {
+        // Simulate loading for 500 milliseconds, then set isLoading to false
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 5000);
+
+        return () => clearTimeout(timer); // Cleanup on unmount
+    }, []);
+
+    useEffect(() => {
 
     if (allListings === null) {
         axios
@@ -26,6 +43,7 @@ export function GuestHomepage() {
         .then((response) => {
             // Update the state with the fetched data
             setAllListings(response.data);
+            setIsLoading(false);
             console.log(allListings);
 
         })
@@ -108,6 +126,8 @@ export function GuestHomepage() {
                 </Helmet>
             }
         <GuestHeader />
+        <GuestNav />
+
 
         <div id="mySidenav" className="sidenav">
             <Link className="closebtn" onClick={closeNav}>&times;</Link>
@@ -135,13 +155,15 @@ export function GuestHomepage() {
                 <button type="button" onClick={handleDismiss} className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>}
 
-            {filterListings && filterListings.length > 0 ? (
+            {/* {filterListings && filterListings.length > 0 ? (
             <section className="houses" id="main">
                 {filterListings.map((element) => (
                 
                     <div className="house" key={element._id}>
                         <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
-                        <div style={{ backgroundImage: `url(${element.img_url1})`,}} className="house-img"></div>
+                        <div style={{ backgroundImage: `url(${element.img_url1})`,
+                        backgroundSize: 'cover',
+                        }} className="house-img"></div>
                         <p className="title">{element.Title.substring(0, 30) + "..."}</p>
                         <p className="description">{element.Bedrooms} Bedroom(s), {element.Bathrooms} Bathroom(s)</p>
                         <p className="location">{element.Address.District}, {element.Address.State}</p>
@@ -157,7 +179,9 @@ export function GuestHomepage() {
                 
                     <div className="house" key={element._id}>
                         <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
-                        <div style={{ backgroundImage: `url(${element.img_url1})`,}} className="house-img"></div>
+                        <div style={{ backgroundImage: `url(${element.img_url1})`,
+                        backgroundSize: 'cover',
+                        }} className="house-img"></div>
                         <p className="title">{element.Title.substring(0, 30) + "..."}</p>
                         <p className="description">{element.Bedrooms} Bedroom(s), {element.Bathrooms} Bathroom(s)</p>
                         <p className="location">{element.Address.District}, {element.Address.State}</p>
@@ -167,7 +191,50 @@ export function GuestHomepage() {
             
                 ))}
             </section>
-            )}
+            )} */}
+            {isLoading ? ( // Render loading spinner while isLoading is true
+            <Loading />
+        ) : (
+            <>
+                {filterListings && filterListings.length > 0 ? (
+                    <section className="houses" id="main">
+                        {filterListings.map((element) => (
+                            <div className="house" key={element._id}>
+                                <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
+                                    <div style={{
+                                        backgroundImage: `url(${element.img_url1})`,
+                                        backgroundSize: 'cover',
+                                    }} className="house-img"></div>
+                                    <p className="title">{element.Title.substring(0, 30) + "..."}</p>
+                                    <p className="description">{element.Bedrooms} Bedroom(s), {element.Bathrooms} Bathroom(s)</p>
+                                    <p className="location">{element.Address.District}, {element.Address.State}</p>
+                                    <p className="pricep">Cost/Night: Rs.{element.CostPerN}</p>
+                                </NavLink>
+                            </div>
+                        ))}
+                    </section>
+                ) : (
+                    <section className="houses" id="main">
+                        {allListings && allListings.map((element) => (
+                            <div className="house" key={element._id}>
+                                <NavLink key={element._id} to={`/guest/reserve/${element._id}`}>
+                                    <div style={{
+                                        backgroundImage: `url(${element.img_url1})`,
+                                        backgroundSize: 'cover',
+                                    }} className="house-img"></div>
+                                    <p className="title">{element.Title.substring(0, 30) + "..."}</p>
+                                    <p className="description">{element.Bedrooms} Bedroom(s), {element.Bathrooms} Bathroom(s)</p>
+                                    <p className="location">{element.Address.District}, {element.Address.State}</p>
+                                    <p className="pricep">Cost/Night: Rs.{element.CostPerN}</p>
+                                </NavLink>
+                            </div>
+                        ))}
+                    </section>
+                )}
+            </>
+        )}
+
+        <Footer/>
         </HelmetProvider>
         // </div>
     );

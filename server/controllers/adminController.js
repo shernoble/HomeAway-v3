@@ -209,6 +209,52 @@ exports.adminReports=async(req,res) => {
     }
 }
 
+exports.adminGetReport = async (req, res) => {
+    try {
+        const reportId = req.params.id;
+        console.log(reportId);
+        const report = await Report.findById(reportId);
+        // console.log("REPORRRRTTTTT");
+        // console.log(report);
+
+        if (!report) {
+            return res.status(404).json({ error: 'Report not found' });
+        }
+
+        // If your report schema includes a reference to the guest's ID
+        const guestID = report.guestID; // Adjust this according to your schema
+        const guest = await Guest.findById(guestID);
+
+        // Alternatively, if the guest details are nested within the report document, you can access them directly
+        // const { guest } = report;
+
+        if (!guest) {
+            return res.status(404).json({ error: 'Guest not found' });
+        }
+
+        // Send both report and guest data to the client
+        res.status(200).json({ report, guest });
+    } catch (error) {
+        console.error("Error fetching report:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Controller function to delete a report
+exports.adminDeleteReport = async (req, res) => {
+    try {
+        const reportId = req.params.id;
+        const deletedReport = await Report.findByIdAndDelete(reportId);
+        if (!deletedReport) {
+            return res.status(404).json({ error: 'Report not found' });
+        }
+        res.json({ message: 'Report deleted successfully' });
+    } catch (error) {
+        console.error("Error deleting report:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 exports.adminSearchGuest=async(req,res) => {
     var x=req.body.searchterm;
     console.log("you have reached backend");
@@ -340,5 +386,91 @@ exports.adminDelete=async(req,res) => {
     }
     
 
+}
+
+exports.adminVerifyGuest = async (req, res) => {
+    try {
+        const id = req.body.id;
+        console.log("id="+id);
+        // Update the guest with the provided ID and set Verified parameter to true
+        Guest.findByIdAndUpdate(id, { Verified: true }, { new: true })
+            .then(function (doc) {
+                // Handle the case when the guest is successfully updated
+                if (doc) {
+                    console.log("Guest verified successfully:", doc);
+                    res.status(200).json({ success: true, message: 'Guest verified successfully' });
+                } else {
+                    // Handle the case when no guest with the given ID is found
+                    console.log("No guest found with the provided ID:", id);
+                    res.status(404).json({ success: false, message: 'No guest found with the provided ID' });
+                }
+            })
+            .catch(function (err) {
+                // Handle any errors that occur during the update process
+                console.error("Error updating guest:", err);
+                res.status(500).json({ success: false, message: 'Error updating guest' });
+            });
+    } catch (err) {
+        // Handle any unexpected errors
+        console.error("Error:", err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+}
+exports.adminVerifyHost = async (req, res) => {
+    try {
+        const id = req.body.id;
+        console.log("id="+id);
+        // Update the guest with the provided ID and set Verified parameter to true
+        Host.findByIdAndUpdate(id, { Verified: true }, { new: true })
+            .then(function (doc) {
+                // Handle the case when the guest is successfully updated
+                if (doc) {
+                    console.log("Host verified successfully:", doc);
+                    res.status(200).json({ success: true, message: 'Host verified successfully' });
+                } else {
+                    // Handle the case when no guest with the given ID is found
+                    console.log("No host found with the provided ID:", id);
+                    res.status(404).json({ success: false, message: 'No host found with the provided ID' });
+                }
+            })
+            .catch(function (err) {
+                // Handle any errors that occur during the update process
+                console.error("Error updating host:", err);
+                res.status(500).json({ success: false, message: 'Error updating host' });
+            });
+    } catch (err) {
+        // Handle any unexpected errors
+        console.error("Error:", err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+}
+
+exports.adminVerifyListing = async (req, res) => {
+    try {
+        const id = req.body.id;
+        console.log("id="+id);
+        // Update the guest with the provided ID and set Verified parameter to true
+        Listing.findByIdAndUpdate(id, { Verified: true }, { new: true })
+            .then(function (doc) {
+                // Handle the case when the guest is successfully updated
+                if (doc) {
+                    console.log("Listing verified successfully:", doc);
+                    res.status(200).json({ success: true, message: 'listing verified successfully' });
+                } else {
+                    // Handle the case when no guest with the given ID is found
+                    console.log("No listing found with the provided ID:", id);
+                    res.status(404).json({ success: false, message: 'No listing found with the provided ID' });
+                }
+            })
+            .catch(function (err) {
+                // Handle any errors that occur during the update process
+                console.error("Error updating listing:", err);
+                res.status(500).json({ success: false, message: 'Error updating listing' });
+            });
+    } catch (err) {
+        // Handle any unexpected errors
+        console.error("Error:", err);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 }
 

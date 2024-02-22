@@ -20,6 +20,10 @@ const bookingSchema= new mongoose.Schema({
     ToDate:{
         type:Date,
         required:true
+    },
+    Verified:{
+        type:Boolean,
+        default:false
     }
 });
 

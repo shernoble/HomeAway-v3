@@ -10,6 +10,8 @@ import { GuestConfirmation } from "../pages/guest/GuestConfirmation";
 import { GuestProfile } from "../pages/guest/GuestProfile";
 import { UserReportForm } from "../pages/guest/GuestReport";
 import { ChangePassword } from "../pages/guest/GuestEditPass";
+// import { AboutUs } from "../pages/gen/AboutUs";
+// import { FAQ } from "../pages/gen/FAQ";
 import { useSelector,useDispatch} from "react-redux";
 import { AuthActions } from "../store/authSlice";
 
@@ -18,14 +20,15 @@ import { AuthActions } from "../store/authSlice";
 export function GuestRoutes(){
 
     const dispatch=useDispatch();
-    const isUser=useSelector(state => state.auth.user);
-    // console.log("isuser guest?"+isUser);
-    useEffect(() => {
-        // Fetch user details when the component mounts
-        dispatch(AuthActions.getUser());
-    }, [dispatch]);
-    // const isGuest=isUser.UserType==="Guest";
-    // console.log("guest???"+isUser.UserType);
+    const user=useSelector(state => state.auth.user);
+    const role=useSelector(state => state.auth.role);
+    console.log(role);
+    console.log(role==="guest");//false?damn
+    // useEffect(() => {
+    //     // Fetch user details when the component mounts
+    //     dispatch(AuthActions.getUser());
+    // }, [dispatch]);
+
 
 
     return (
@@ -33,35 +36,25 @@ export function GuestRoutes(){
             <Route path="login" element={<GuestLogin />} />
             <Route path="register" element={<GuestRegister/>} />
 
-            {isUser &&
-                <Route path="startingPage" element={<GuestStartingPage />} />
-            }
-            {isUser &&
-                <Route path="homePage" element={<GuestHomepage/>} />
-            }
-            {isUser &&
-                <Route path="homepagefull" element={<GuestHomepage/>} />
-            }
-            {isUser &&
-                <Route path="reserve/:id" element={<GuestReservation/>} />
-            }
-            {isUser &&
-                <Route path="confirm" element={<GuestConfirmation/>} />
-            }
-            {isUser &&
-                <Route path="report" element={<UserReportForm/>} />
-            }
-            {isUser &&
-                <Route path="profile" element={<GuestProfile/>} />
-            }
-            {isUser &&
-            <Route path="editPass" element={<ChangePassword/>} />
-            }
+            {role === 'guest' && user && (
+                <>
+                    <Route path="startingPage" element={<GuestStartingPage />} />
+                    <Route path="homePage" element={<GuestHomepage/>} />
+                    <Route path="homepagefull" element={<GuestHomepage/>} />
+                    <Route path="reserve/:id" element={<GuestReservation/>} />
+                    <Route path="confirm" element={<GuestConfirmation/>} />
+                    <Route path="report" element={<UserReportForm/>} />
+                    <Route path="profile" element={<GuestProfile/>} />
+                    <Route path="editPass" element={<ChangePassword/>} />
+                    {/* <Route path="aboutUs" element={<AboutUs/>} />
+                    <Route path="faqs" element={<FAQ/>} /> */}
+                </>
+            )}
+
             <Route path="NotFound" element={<NotFoundPage/>} />
-            {/* not login , redirect to page not found */}
-            <Route path="*"
-                element={isUser?<Navigate to='notFound' replace/>:<Navigate to="login" replace />}>              
-            </Route>
+            
+            {/* If the user is not logged in or the role is not 'guest', redirect to login */}
+            <Route path="*" element={(!user || role !== 'guest') ? <Navigate to="/guest/login" replace /> : <Navigate to="/NotFound" replace />} />
         </Routes>
     )
     

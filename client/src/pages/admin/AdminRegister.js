@@ -8,6 +8,7 @@ export function AdminRegister(){
     const title="HomeAway(Admin)";
     const picno="/imgs/56.jpg";
     const loginLink="/admin/login";
+    const role="admin";
 
     return (
         <HelmetProvider>
@@ -20,6 +21,7 @@ export function AdminRegister(){
             title={title}
             picno={picno}
             loginLink={loginLink}
+            role={role}
             />
         </HelmetProvider>
     )

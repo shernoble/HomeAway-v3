@@ -4,14 +4,16 @@ import React from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
-import { AuthActions } from '../../store/authSlice';
+// import { AuthActions } from '../../store/authSlice';
 import { GuestHeader } from "../../components/guestHeader/GuestHeader";
+import { GuestNav } from '../../components/guestNavbar/GuestNav';
+import { Footer } from '../../components/Footer2/GFooter';
 import { ListingDetails } from '../../components/ListingDetails/ListingDetails';
-import { Footer } from '../../components/Footer/Footer';
+// import { Footer } from '../../components/Footer/Footer';
 
 export function GuestConfirmation(){
     // const { startDate, endDate } = useParams();
-    const dispatch=useDispatch();
+    // const dispatch=useDispatch();
 
     const listing=useSelector(state => state.guestSearch.reservation.listing);
     const checkin=new Date(useSelector(state => state.guestSearch.reservation.fromDate));
@@ -71,6 +73,7 @@ export function GuestConfirmation(){
             </Helmet>
         }
         <GuestHeader />
+        <GuestNav/>
         <div id="conf">
             {[...Array(14)].map((_, index) => (
             <div key={index} className="cp"></div>

@@ -1,14 +1,27 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useState,useEffect } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { GuestHeader } from '../../components/guestHeader/GuestHeader';
 import { ProfileCard } from '../../components/profileCard/ProfileCard';
-import { Footer } from '../../components/Footer/Footer';
+import { Footer } from '../../components/Footer2/GFooter';
 import { Link } from 'react-router-dom';
+import { GuestNav } from '../../components/guestNavbar/GuestNav';
+import { Loading } from '../../components/Loading/Loading';
 
 export function GuestProfile() {
+    const [isLoading, setIsLoading] = useState(true);
     const user = useSelector(state => state.auth.user);
     const bookings = user.Bookings;
+
+    useEffect(() => {
+        // Simulate loading for 500 milliseconds, then set isLoading to false
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer); // Cleanup on unmount
+    }, []);
 
     return (
         <HelmetProvider>
@@ -17,6 +30,11 @@ export function GuestProfile() {
                 <title>Profile-Guest</title>
             </Helmet>
             <GuestHeader />
+            <GuestNav/>
+            {isLoading ? ( // Render loading spinner while isLoading is true
+            <Loading />
+            ) : (
+            <>
             <div className="container mt-5">
                 <div className="row">
                     <div className="col-md-6">
@@ -65,7 +83,9 @@ export function GuestProfile() {
                     </div>
                 </div>
             </div>
-            {/* <Footer/> */}
+            <Footer/>
+            </>
+        )}
         </HelmetProvider>
     );
 }
