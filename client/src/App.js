@@ -1,8 +1,7 @@
 import { Route,Routes } from 'react-router';
 
 import './App.css';
-// import { Footer } from './components/Footer/Footer';
-// import { Header } from './components/Header/Header';
+
 import {GuestRoutes} from './routes/GuestRoutes';
 import {HostRoutes} from './routes/HostRoutes';
 import {AdminRoutes} from './routes/AdminRoutes';
