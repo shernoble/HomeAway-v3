@@ -38,4 +38,9 @@ jobs:
           fi
 
       - name: Run Tests
-        run: npm test
+        run: |
+          if [ -f "package.json" ]; then
+            npm test
+          else
+            echo "No package.json found, skipping tests"
+          fi
