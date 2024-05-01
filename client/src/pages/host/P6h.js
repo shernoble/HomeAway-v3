@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 import {AmenitiesCheckbox} from '../../components/AmenitiesCheckbox/AmenitiesCheckbox';
+
 
 const P6h = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
   const [isChecked, setIsChecked] = useState({
     o1: false,
@@ -27,8 +30,43 @@ const P6h = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const selectedCheckboxes = Object.keys(isChecked).filter((key) => isChecked[key]);
+    const selectedCheckboxes = Object.keys(isChecked)
+    .filter((key) => isChecked[key])
+    .map((key) => key); // Extract keys (IDs) of selected checkboxes
+  const amenitiesLabels = selectedCheckboxes.map((key) => {
+    // Map each key to its corresponding label
+    switch (key) {
+      case 'o1':
+        return 'Kitchen';
+      case 'o2':
+        return 'Tv';
+      case 'o3':
+        return 'Wifi';
+      case 'o4':
+        return 'Ac';
+      case 'o5':
+        return 'Washing Machine';
+      case 'o6':
+        return 'Parking Area';
+      case 'o7':
+        return 'Pool';
+      case 'o8':
+        return 'Hot Tub';
+      case 'o9':
+        return 'Exercise Equipment';
+      case 'o10':
+        return 'First Aid';
+      case 'o11':
+        return 'Smoke Alarm';
+      case 'o12':
+        return 'Fire Extinguisher';
+      // Add cases for other checkboxes
+      default:
+        return ''; // Handle the default case
+    }
+  });
     if (selectedCheckboxes.length > 0) {
+      dispatch({ type: 'UPDATE_AMENITIES', payload: amenitiesLabels });
       navigate('/host/p7h'); 
     } else {
       alert('Check at least one checkbox');
@@ -55,9 +93,9 @@ const P6h = () => {
         </div>
         <form action="/p6h" method="post" onSubmit={handleFormSubmit}>
           <div className="bg-img">
-            <h1 style={{ fontSize: '45px', marginTop: '0px', padding: '12px' }}>
+            <h3 style={{ fontSize: '30px', marginTop: '0px', padding: '12px' }}>
               What amenities can you provide to guests
-            </h1>
+            </h3>
             <div className="a1">
             <AmenitiesCheckbox
               id="1"
@@ -130,14 +168,14 @@ const P6h = () => {
             />
             <AmenitiesCheckbox
               id="9"
-              label="Exercise Equipment"
+              label="ExerciseEquipment"
               isChecked={isChecked.o9}
               handleCheckboxChange={handleCheckboxChange}
               imageSrc="/images/exercise.jpg"
               altText="exercise"
             />
             </div>
-            <h2>Do you have any of these Safety items?</h2>
+            <h3 style={{fontSize:'30px'}}>Do you have any of these Safety items?</h3>
             <div className="a4">
               
             <AmenitiesCheckbox
@@ -165,7 +203,7 @@ const P6h = () => {
               altText="fe"
             />
             </div>
-            <hr />
+            <hr style={{marginTop:'45px'}}/>
             <div>
               <div>
                 <button className="c1" type="button" onClick={handleBack}>Back</button>

@@ -4,7 +4,8 @@ import { HostLoginForm } from "../../components/HostLoginForm/HostLoginForm";
 
 export function HostLogin(){
     const registerLink="/host/register";
-    const navigateLink="/host/p1h";
+    const navigateLink="/host/dashboard";
+    const postLink="http://localhost:5050/host/login";
     const title="HomeAway(Host)";
     const picno="/imgs/34.jpg";
 
@@ -14,6 +15,7 @@ export function HostLogin(){
                 <title>Host-Login</title>
             </Helmet>
             <HostLoginForm 
+            postLink={postLink}
             registerLink={registerLink} 
             navigateLink={navigateLink} 
             title={title}

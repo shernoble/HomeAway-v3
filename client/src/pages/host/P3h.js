@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
+
 function P3h() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
     const [selectedOption, setSelectedOption] = useState('');
     const [buttonStyle, setButtonStyle] = useState({
       background: '#ccccce',
@@ -36,6 +39,7 @@ function P3h() {
     const handleSubmit = (e) => {
       e.preventDefault();
       if (checkRadio()) {
+        dispatch({ type: 'UPDATE_ROOM_TYPE', payload: selectedOption });
         navigate('/host/p4h');
       }
       else{
@@ -122,7 +126,7 @@ function P3h() {
             </button>
           </div>
           <div>
-            <button type="submit" className="cr" style={buttonStyle} onClick={checkRadio}>
+            <button type="submit" className="cr" style={buttonStyle} onClick={handleSubmit}>
               Next
             </button>
           </div>

@@ -1,7 +1,9 @@
 import React from 'react';
 // import { useParams } from 'react-router-dom';
 // import './GuestConfirmation.css'; // Import your CSS file
+import { useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
 import axios from 'axios';
 // import { AuthActions } from '../../store/authSlice';
@@ -9,25 +11,39 @@ import { GuestHeader } from "../../components/guestHeader/GuestHeader";
 import { GuestNav } from '../../components/guestNavbar/GuestNav';
 import { Footer } from '../../components/Footer2/GFooter';
 import { ListingDetails } from '../../components/ListingDetails/ListingDetails';
+// import { Checkout } from '../../components/CheckoutModal/Checkout';
 // import { Footer } from '../../components/Footer/Footer';
+
+import { loadStripe } from '@stripe/stripe-js';
 
 export function GuestConfirmation(){
     // const { startDate, endDate } = useParams();
     // const dispatch=useDispatch();
-
-    const listing=useSelector(state => state.guestSearch.reservation.listing);
-    const checkin=new Date(useSelector(state => state.guestSearch.reservation.fromDate));
-    const checkout=new Date(useSelector(state => state.guestSearch.reservation.toDate));
+    // const navigate=useNavigate();
+    const listing=useSelector(state => state.guestSearch.listing);
+    const checkin=new Date(useSelector(state => state.guestSearch.fromDate));
+    const checkout=new Date(useSelector(state => state.guestSearch.toDate));
     const user=useSelector(state => state.auth.user);
+    const PUBLISHABLE_KEY='pk_test_51PAY0ySI0FjRDwYQ8RlYKPxqO23bHS8pB6JgWQCRcCSu9ro6f4s6WDGLby28svA8xF35zOLBOzp9ZBeI5uHjkLqx00agN2Ofkv';
+    
+    console.log("");
+    console.log(listing);
+
+    const [showModal, setShowModal] = useState(false);
 
     const num_days=Math.ceil(Math.abs(checkout-checkin)/(24*60*60*1000));
 
+    let {success} =useParams();
+
+    success=success || false;
+
     const handleConfirmation=async() => {
+        setShowModal(false);
         const bookingMessage=document.getElementById('booking-message');
         const confetti=document.getElementsByClassName('cp');
         const confDiv=document.getElementById('conf');
         const response=await axios.post("http://localhost:5050/guest/confirmBooking",{listing,checkin,checkout,user});
-        console.log(response.data);
+        console.log(response.data.booking);
         if (response.data.success) {
             // Booking successful
             bookingMessage.classList.remove('alert-danger');
@@ -62,6 +78,53 @@ export function GuestConfirmation(){
         }
     
     };
+    // const handleConfirmation=async() => {
+    //     navigate('/guest/payment');
+    // }
+    if(success){
+        // handleConfirmation();
+        console.log("hi");
+    }
+
+    // const handleCloseModal = () => {
+    //     setShowModal(false);
+    // };
+
+    const makePayment = async()=>{
+        try{
+            const stripe = await loadStripe(PUBLISHABLE_KEY);
+
+            const body = {
+                listing:listing,
+                num_days:num_days
+            }
+            const headers = {
+                "Content-Type":"application/json"
+            }
+            const response = await fetch("http://localhost:5050/guest/create-checkout-session",{
+                method:"POST",
+                headers:headers,
+                body:JSON.stringify(body)
+            });
+            const session = await response.json();
+
+            const result = stripe.redirectToCheckout({
+                sessionId:session.id
+            });
+            
+            if(result.error){
+                console.log(result.error);
+            }
+        }
+        catch(error){
+            console.error('Error making payment:', error);
+        }
+
+        
+        // else{
+        //     handleConfirmation();
+        // }
+    }
 
     return (
         <HelmetProvider>
@@ -111,14 +174,29 @@ export function GuestConfirmation(){
         
         <div className="buttons-container">
             
-            <button type="button" id="confirmBtn" className="confbtn btn btn-outline-success" onClick={handleConfirmation}>
-                Confirm Booking
+            {/* <button type="button" id="confirmBtn" className="confbtn btn btn-outline-success" onClick={() => setShowModal(true)}>
+                Make Payment
+            </button> */}
+            <button type="button" id="confirmBtn" className="confbtn btn btn-outline-success" onClick={makePayment}>
+                Make Payment
             </button>
+
+            {/* <button
+                className="delete-button btn btn-danger"
+                onClick={() => handleShowModal(element.UserName, element._id)}
+            ></button> */}
 
             <button className="cancelbtn btn btn-outline-dark" onClick={() => window.history.back()} name="go_back">
             Cancel
             </button>
         </div>
+        {/* <Checkout
+            show={showModal}
+            handleClose={handleCloseModal}
+            handleConfirmation={handleConfirmation}
+            listing={listing}
+            num_days={num_days}
+        /> */}
         <Footer/>
         </HelmetProvider>
     );

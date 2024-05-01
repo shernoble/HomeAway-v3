@@ -43,7 +43,7 @@ export function LoginForm({postLink,navigateLink,title,registerLink,picno,role})
                     if(response.data.auth){
                         // LOGIN SUCCESS
                         console.log("role="+role);
-                        dispatch(AuthActions.login({user:response.data.user,role:role}));
+                        dispatch(AuthActions.login({user:response.data.user,role:String(role)}));
                         navigate(navigateLink);
             
                     }

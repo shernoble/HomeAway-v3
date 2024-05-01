@@ -40,14 +40,17 @@ export function AdminHomePage() {
         } else {
             setMessage('No results');
         }
+        })
+        .catch((error) => {
+            console.error("Error searching for hosts:", error);
         });
-    };
+    }
 
-    const handleShowModal = (id) => {
+    const handleShowModal = (listingid) => {
         setModalContent({
-            title: "Delete User",
-            desc: `Are you sure you want to delete ${id} ?`,
-            onConfirm: () => handleDeleteListing(id),
+            title: "Delete Listing",
+            desc: `Are you sure you want to delete ${listingid} ?`,
+            onConfirm: () => handleDeleteListing(listingid),
         });
         setShowModal(true);
     };
@@ -79,7 +82,7 @@ export function AdminHomePage() {
             
         })
         .catch((error) => {
-            setMessage("error delting guest!Pls try again later!!");
+            setMessage("error delting listing!Pls try again later!!");
             console.error("Error deleting list:", error);
         });
             
@@ -169,7 +172,10 @@ export function AdminHomePage() {
                 >
                     Unverified Listings
                 </button>
+
+                
         </div>
+        
             {filteredListings.length ? (
             filteredListings.map((element) => (
                 <div className="item" key={element._id} >
@@ -199,7 +205,7 @@ export function AdminHomePage() {
                         </button>
                         <button
                             className="delete-button btn btn-danger"
-                            onClick={() => handleShowModal(element.UserName, element._id)}
+                            onClick={() => handleShowModal(element._id)}
                         >
                             <i className="fa-sharp fa-solid fa-trash"></i>
                         </button>

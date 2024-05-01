@@ -1,12 +1,14 @@
-
-import { useState } from "react"
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { useState } from "react";
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { useNavigate,Link} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { validRegisteration } from "../../js/loginRegValidations";
-
-
-export function HostRegisterForm({title,picno}){
+import { NavLink,Link} from "react-router-dom";
+import { AuthActions } from "../../store/authSlice";
+export function HostRegisterForm({registerLink,navigateLink,title,loginLink,picno}){
     const navigate=useNavigate();
+    const dispatch = useDispatch();
     const [formvalues,setFormValues]=useState({
         username:'',
         email:'',
@@ -24,16 +26,29 @@ export function HostRegisterForm({title,picno}){
     const submitHandler = async (event) => {
         event.preventDefault();
         const validationError = validRegisteration(formvalues);
-
+    
         if (validationError) {
-            // alert(validationError);
             setFormErrors(validationError);
-            return ;
+            return;
         }
-            navigate('/host/p1h');
-            
-        };
-
+    
+        try {
+            const response = await axios.post(registerLink, { formvalues });
+    
+            if (response.data.exists) {
+                setFormErrors("email already in use");
+            } else {
+                dispatch(AuthActions.login(response.data.user));
+                navigate(navigateLink);
+            }
+    
+            console.log("response:", response.data);
+        } catch (error) {
+            console.error('Error making the request:', error);
+            setFormErrors(error.toString());
+        }
+    };
+    
     return (
         <HelmetProvider>
             {
@@ -58,7 +73,7 @@ export function HostRegisterForm({title,picno}){
                             </div>
                             <div className="col-md-6 col-lg-7 d-flex">
                             <div className="card-body p-4 p-lg-4 text-black">
-                                <form onSubmit={submitHandler}>
+                                <form onSubmit={submitHandler} >
                                 <div className="d-flex align-items-center mb-3 pb-1">
                                     <h1 className="fw-bold mb-4">{title}</h1>
                                 </div>

@@ -49,10 +49,10 @@ export function Footer() {
             );
 
             if (height <= window.innerHeight) {
-                footerRef.current.style.position = 'fixed';
+                footerRef.current.style.position = 'static';
                 footerRef.current.style.bottom = 0;
             } else {
-                footerRef.current.style.position = 'static';
+                footerRef.current.style.position = 'stati';
                 footerRef.current.style.bottom = null;
             }
         }

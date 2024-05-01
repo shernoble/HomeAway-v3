@@ -1,4 +1,3 @@
-// AddressForm.js
 import React from 'react';
 
 export function AddressForm ({ formData, handleChange, handleFormSubmit, handleBack, isFormValid }){
@@ -15,8 +14,8 @@ export function AddressForm ({ formData, handleChange, handleFormSubmit, handleB
       <br />
       <br />
       <form action="/host/p4h" method="post" onSubmit={handleFormSubmit}>
-        <div className="main-block" style={{ height: '400px', width: '500px', marginTop: '0px', marginLeft: '480px', padding: '0px' }}>
-          <div className="info">
+        <div className="main-block" style={{ height: '400px', width: '500px', marginTop: '0px', marginLeft: '480px',marginBottom:'0px', padding: '0px' }}>
+          <div className="info" style={{marginTop: '0px'}}>
           <p style={{ fontSize: '20px', marginBottom: '5px'}}>Street</p>
             <input
               type="text"

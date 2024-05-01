@@ -176,19 +176,19 @@ export function GuestReservation() {
                         <ul>
                             {listing.Facilities.map((facility, index) => {
                                 if (facility === 'wi-fi') {
-                                    return <li key={index}><i class="fa-solid fa-wifi"></i></li>;
+                                    return <li key={index}><i className="fa-solid fa-wifi"></i></li>;
                                 }
                                 if (facility === 'TV') {
-                                    return <li key={index}><i class="fa-solid fa-tv"></i></li>;
+                                    return <li key={index}><i className="fa-solid fa-tv"></i></li>;
                                 }
                                 if (facility === 'ac') {
                                     return <li key={index}>AC</li>;
                                 }
                                 if (facility === 'parking') {
-                                    return <li key={index}><i class="fa-solid fa-square-parking"></i></li>;
+                                    return <li key={index}><i className="fa-solid fa-square-parking"></i></li>;
                                 }
                                 if (facility === 'pool') {
-                                    return <li key={index}><i class="fa-solid fa-water-ladder"></i></li>;
+                                    return <li key={index}><i className="fa-solid fa-water-ladder"></i></li>;
                                 }
                                 return null; // Return null for facilities other than 'wifi'
                             })}
@@ -199,6 +199,7 @@ export function GuestReservation() {
                     <div className="card-body">
                         <h5 className="card-title" style={{textDecoration:'underline'}}>House Rules</h5>
                         <HouseRentalRules/>
+                        <h5 className="card-title" style={{textDecoration:'underline'}}>Ratings and Reviews</h5>
                     </div>
                 </div>
                 

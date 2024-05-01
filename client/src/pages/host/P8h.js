@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
-
+import { useDispatch } from 'react-redux';
 function P8h() {
   const [textAreaValue, setTextAreaValue] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleTextAreaChange = (event) => {
     setTextAreaValue(event.target.value);
@@ -18,7 +19,7 @@ function P8h() {
     if (textAreaValue.length < 2) {
       alert("Give some short title of at least 2 characters");
     } else {
-      // Your logic for submitting the form or navigating to the next page
+      dispatch({ type: 'UPDATE_SHORT_TITLE', payload: textAreaValue });
       navigate('/host/p9h');
     }
   };
@@ -49,7 +50,7 @@ function P8h() {
           onChange={handleTextAreaChange}
           required
         ></textarea>
-        <hr />
+        <hr style={{marginTop:'30px'}}/>
         <div>
           <div>
           <button className="c1" type="button" onClick={handleBack}>

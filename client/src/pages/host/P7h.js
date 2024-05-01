@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 function P7h() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    // const [imageUrls, setImageUrls] = useState([]);
     const [files, setFiles] = useState([]);
     const [containerContent, setContainerContent] = useState([]);
     const [dragAreaClass, setDragAreaClass] = useState('');
@@ -69,13 +73,39 @@ function P7h() {
             }
         }
     };
-
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async(e) => {
         e.preventDefault();
         if (files.length !== 5) {
             alert("Upload 5 images");
-        } else {
-            navigate('/host/p8h');
+        } 
+        else 
+        {
+            const formData = new FormData();
+            
+
+// Dispatch actions to update individual image URLs in the store
+files.forEach((file, index) => {
+    const filePath = `C:/Users/kavya/OneDrive/Pictures/Screenshots/${file.name}`;
+    
+    
+    // Dispatch the filename with path as the URL
+    dispatch({ type: 'UPDATE_IMAGE_URL', payload: { index: index + 1, url: filePath } });
+    
+    formData.append(`images`, file);
+});
+
+// Now formData contains all files appended with keys "image1", "image2", etc.
+
+            
+                const response = await axios.post('http://localhost:5050/host/uploadimages', formData)
+
+            
+            
+            for (const pair of formData.entries()) {
+                console.log(pair[0] + ', ' + pair[1]); 
+              }
+            console.log(response.data);
+            navigate('/host/p8h')
         }
     };
 
@@ -99,7 +129,7 @@ function P7h() {
             </div>
             <h1 style={{ marginTop: '100px', marginLeft: '530px' }}>Add some photos of your place</h1>
             <p style={{ marginTop: '10px', marginLeft: '530px' }}>You'll need 5 photos to get started.</p>
-            <form action="/p7h" method="post" encType="multipart/form-data" onSubmit={handleFormSubmit}>
+            <form encType="multipart/form-data" onSubmit={handleFormSubmit}>
                 <div className="card" style={{ marginTop: '20px', marginLeft: '460px', width: '700px' }}>
                     <div
                         className={`drag-area ${dragAreaClass}`}
@@ -128,7 +158,7 @@ function P7h() {
                         {containerContent}
                     </div>
                 </div>
-                <hr />
+                <hr style={{marginTop:'30px'}}/>
                 <div>
                     <button className="c1" type="button" onClick={handleBack}>
                         Back

@@ -28,8 +28,8 @@ function P1h() {
                     </p>
                 </div>
             </div>
-            <hr />
-            <Link to="/host/login">
+            <hr style={{marginTop:'10px'}}/>
+            <Link to="/host/dashboard">
                 <input className="c1" type="button" value="Back" />
             </Link>
             <Link to="/host/p2h">

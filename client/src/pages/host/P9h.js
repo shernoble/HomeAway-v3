@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HelmetProvider,Helmet } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 
 function P9h() {
-    const navigate = useNavigate();
-  const [description, setDescription] = useState("You'll have a great time at this place to stay comfortably.");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  const [description, setDescription] = useState("You'll have a great time at this place to stay comfortably.");
+  
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (description.length < 5) {
       alert('Give some description of at least 5 characters');
     } else {
+      dispatch({ type: 'UPDATE_DESCRIPTION', payload: description });
       navigate('/host/p10h') 
     }
   };

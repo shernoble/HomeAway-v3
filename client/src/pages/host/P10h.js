@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { HelmetProvider,Helmet } from 'react-helmet-async';
+import { useDispatch } from 'react-redux';
 
 
 function P10h() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [price, setPrice] = useState(850);
 
   const increment = () => {
@@ -21,6 +23,7 @@ function P10h() {
   };
 
   const handleFormSubmit = () => {
+    dispatch({ type: 'UPDATE_PRICE', payload: price });
     navigate('/host/congo')
   };
   const handleBack = () => {
@@ -60,7 +63,7 @@ function P10h() {
               type="text"
               className="quantity_input"
               placeholder="₹"
-              value={price}
+              defaultValue={price}
             />
           </div>
 

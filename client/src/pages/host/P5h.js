@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet,HelmetProvider } from 'react-helmet-async';
-
+import { useDispatch } from 'react-redux';
 
 function P5h() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [guests, setGuests] = useState('');
   const [beds, setBeds] = useState('');
   const [bathroom, setBathroom] = useState('');
@@ -16,7 +17,11 @@ function P5h() {
       return;
     }
     else{
-        navigate('/host/p6h');
+      dispatch({ type: 'UPDATE_GUESTS', payload: guests });
+      dispatch({ type: 'UPDATE_BEDS', payload: beds });
+      dispatch({ type: 'UPDATE_BATHROOMS', payload: bathroom });
+      dispatch({ type: 'UPDATE_BEDROOMS', payload: bedroom });
+      navigate('/host/p6h');
     }
   };
 

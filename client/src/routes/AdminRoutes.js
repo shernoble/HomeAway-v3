@@ -12,6 +12,7 @@ import { NotFoundPage } from "../pages/gen/NotFound404";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { AuthActions } from "../store/authSlice";
+import { RegistrationForm } from "../pages/admin/AdminCreate";
 
 export function AdminRoutes() {
     const dispatch = useDispatch();
@@ -38,6 +39,7 @@ export function AdminRoutes() {
                     <Route path="reports/:id" element={<ReportDetailsPage/>} />
                     <Route path="profile" element={<AdminProfile />} />
                     <Route path="editPass" element={<AdminChangePassword />} />
+                    <Route path="createuser" element={<RegistrationForm/>} />
                 </>
             )}
 

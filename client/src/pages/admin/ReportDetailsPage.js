@@ -63,7 +63,7 @@ export function ReportDetailsPage() {
             </div>}
             <div className="report-container">
                 <div style={{display:"flex" , flexDirection: "column" , alignItems:"center"}}>
-                    <h1 >Report Details</h1>
+                    <h3 >Report Details</h3>
                     <table className="report-table">
                         <tbody>
                             <tr>
@@ -96,6 +96,7 @@ export function ReportDetailsPage() {
                             </tr>
                         </tbody>
                     </table>
+                    {/* <br/> */}
                     <div className="buttons-container">
                         <button
                             className="delete"
@@ -117,6 +118,9 @@ export function ReportDetailsPage() {
                             </span>
                         </button>
                     </div>
+                    <br/>
+                    <br/>
+                    <br/>
                 </div>
             </div>
             <Footer/>

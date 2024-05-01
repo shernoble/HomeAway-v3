@@ -16,7 +16,7 @@ const authSlice = createSlice({
             const expiresInMinutes = 60; // Adjust the expiration time as needed
             const expirationTime = new Date().getTime() + expiresInMinutes * 60 * 1000;
             localStorage.setItem("user", JSON.stringify({ ...action.payload.user, expirationTime }));
-            localStorage.setItem("role",JSON.stringify({ ...action.payload.role, expirationTime }))
+            localStorage.setItem("role",JSON.stringify({ ...action.payload.role }))
         },
         getUser(state){
             const storedUser = JSON.parse(localStorage.getItem("user"));

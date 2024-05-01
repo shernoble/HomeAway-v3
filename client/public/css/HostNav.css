@@ -1,0 +1,36 @@
+.hover-box {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); 
+    background-color: #f0f0f0; 
+    border: 1px solid #999;
+    border-radius: 8px; 
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 1500px; 
+    display: flex; 
+    align-items: center; 
+    top:350px;
+    height: 450px;
+    width:1500px;
+}
+
+.hover-box img {
+    width: 400px; 
+    height: 350px;
+    margin-right: 20px;
+}
+
+.hover-box div {
+    flex: 1; 
+}
+
+.hover-box h4 {
+    margin-top: 0; 
+}
+
+.hover-box p {
+    margin: 0; 
+    font-size: 25px;
+
+}

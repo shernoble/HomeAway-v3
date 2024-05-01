@@ -21,9 +21,21 @@ const bookingSchema= new mongoose.Schema({
         type:Date,
         required:true
     },
-    Verified:{
-        type:Boolean,
-        default:false
+    NumGuests:{
+        type:Number,
+        default:2
+    },
+    // Verified:{
+    //     type:Boolean,
+    //     default:false
+    // },
+    Status:{
+        type:String,
+        default:"pending"
+    },
+    createdAt:{
+        type:Date,
+        default:Date.now
     }
 });
 

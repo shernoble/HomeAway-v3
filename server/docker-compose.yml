@@ -1,0 +1,25 @@
+
+
+services:
+  mongo_db:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+
+
+  api:
+    build: .
+    volumes:
+      - /usr/src/node_modules
+    ports:
+      - 5050:5050
+    environment:
+      - ./env
+    depends_on:
+      - mongo_db
+
+
+volumes:
+  mongo_db: {}

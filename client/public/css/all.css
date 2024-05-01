@@ -56,10 +56,16 @@
 }
 body{
   background-color: #E1EEDD;
+  overflow: hidden;
   
 }
 h2
 {
   margin-top: 0px;
   position: 0;
+}
+hr {
+  margin-top: 100px;
+  border: none;
+  border-top: 5px solid #000;
 }

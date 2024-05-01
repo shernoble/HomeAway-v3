@@ -1,3 +1,11 @@
+client-host.zip
+doc.json
+dump.rdb
+server-host.zip
+test-api.postman_collection.json
+.gitignore
+swagger-output.json
+swagger.js
 # Logs
 logs
 *.log

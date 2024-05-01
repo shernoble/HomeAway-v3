@@ -39,10 +39,14 @@ function AdminHeader({title}) {
                 <Link to="/admin/hostList" className="nav-link">Hostlist</Link>
                 </li>
                 <li className="nav-item">
+                <Link to="/admin/createuser" className="nav-link">Create User</Link>
+                </li>
+                <li className="nav-item">
                 <Link to="/admin/reports" className="nav-link">Reports</Link>
                 </li>
-                <li className="nav-item dropdown">
-                </li>
+
+                {/* <li className="nav-item dropdown">
+                </li> */}
                 <li className="nav-item dropdown">
                 <Link
                     className="nav-link dropdown-toggle"

@@ -8,6 +8,9 @@ const Listing=require('../models/Listing');
 const Guest=require('../models/Guest');
 const Host=require('../models/Host');
 const Report=require('../models/Report');
+const { getOrSetCache } = require('../redis/getOrSetCache');
+
+
 
 exports.adminLoginPost=async(req,res) => {
     try{
@@ -166,10 +169,22 @@ exports.adminEditPass=async(req,res) => {
 
 exports.adminHomePage=async(req,res) => {
     try{
-            const results=await Listing.find({});
-            // console.log(results);
-            res.json(results);
-        // }
+
+        // await redisClient.get("listings",async(error,listings) => {
+        //     if(error) console.error(error);
+        //     if(listings!=null) return listings;
+        //     else{
+        //         const listings=await Listing.find();
+        //         redisClient.set("listings", listings);
+        //         return listings;
+        //     }
+        // })
+
+        const listings = await getOrSetCache("listings", async () => {
+            return await Listing.find();
+        })
+
+        res.status(200).send(listings);
         
     }
     catch(err){
@@ -180,8 +195,20 @@ exports.adminHomePage=async(req,res) => {
 exports.adminGuestlist=async(req,res) => {
     try{
 
-        const results=await Guest.find({});
-        res.json(results);
+        // redisClient.get("guests",async(error,guests) => {
+        //     if(error) console.error(error);
+        //     if(guests!=null) return res.json(JSON.parse(guests));
+        //     else{
+        //         const guests=await Guest.find();
+        //         redisClient.setex("guests",DEFAULT_EXP,JSON.stringify(guests));
+        //         res.json(guests);
+        //     }
+        // })
+        const guests = await getOrSetCache("guests", async () => {
+            return await Guest.find();
+        })
+
+        res.status(200).send(guests);
     }
     catch(err){
         res.status(500).send({message:err.message || "Error Occured"});
@@ -190,8 +217,20 @@ exports.adminGuestlist=async(req,res) => {
 
 exports.adminHostlist=async(req,res) => {
     try{
-            const results=await Host.find({});
-            res.json(results);        
+        // redisClient.get("hosts",async(error,hosts) => {
+        //     if(error) console.error(error);
+        //     if(hosts!=null) return res.json(JSON.parse(hosts));
+        //     else{
+        //         const hosts=await Host.find();
+        //         redisClient.setex("hosts",DEFAULT_EXP,JSON.stringify(hosts));
+        //         res.json(hosts);
+        //     }
+        // }) 
+        const hosts = await getOrSetCache("hosts", async () => {
+            return await Host.find();
+        })
+
+        res.status(200).send(hosts);
     }
     catch(err){
         res.status(500).send({message:err.message || "Error Occured"});
@@ -200,9 +239,20 @@ exports.adminHostlist=async(req,res) => {
 
 exports.adminReports=async(req,res) => {
     try{
-            const results=await Report.find({});
-            res.json(results);
+        // redisClient.get("reports",async(error,reports) => {
+        //     if(error) console.error(error);
+        //     if(reports!=null) return res.json(JSON.parse(reports));
+        //     else{
+        //         const reports=await Report.find();
+        //         redisClient.setex("reports",DEFAULT_EXP,JSON.stringify(reports));
+        //         res.json(reports);
+        //     }
+        // }) 
+        const reports = await getOrSetCache("reports", async () => {
+            return await Report.find();
+        })
 
+        res.status(200).send(reports);
     }
     catch(err){
         console.log("error : "+err);
@@ -255,30 +305,56 @@ exports.adminDeleteReport = async (req, res) => {
     }
 };
 
-exports.adminSearchGuest=async(req,res) => {
-    var x=req.body.searchterm;
+// exports.adminSearchGuest=async(req,res) => {
+//     var x=req.body.searchterm;
+//     console.log("search term:"+x);
+//     console.log("you have reached backend");
+//     Guest.find({$text:{$search:x}})
+//     // console.log(l1);
+//         .then(function(results){
+//             console.log(results.length);
+//             if(results.length!=0){
+//                 console.log(results);
+//                 return res.json({results:results});
+//             }
+//             else {
+//                 return res.json({results:null});
+//             }
+//         })
+//         .catch(function(err){
+//             res.status(500).send({message:err.message || "Error Occured"});
+//         });
+// }
+exports.adminSearchGuest = async (req, res) => {
+    var x = req.body.searchterm;
+    console.log("search term:" + x);
     console.log("you have reached backend");
-    Guest.find({$text:{$search:x}})
-    // console.log(l1);
-        .then(function(results){
+    
+    // Using regular expression to match partial strings
+    var regex = new RegExp(x, 'i'); // 'i' flag for case-insensitive search
+    
+    Guest.find({ UserName: { $regex: regex } })
+        .then(function(results) {
             console.log(results.length);
-            if(results.length!=0){
+            if (results.length != 0) {
                 console.log(results);
-                return res.json({results:results});
-            }
-            else {
-                return res.json({results:null});
+                return res.json({ results: results });
+            } else {
+                return res.json({ results: null });
             }
         })
-        .catch(function(err){
-            res.status(500).send({message:err.message || "Error Occured"});
+        .catch(function(err) {
+            res.status(500).send({ message: err.message || "Error Occurred" });
         });
 }
 
+
 exports.adminSearchHost=async(req,res) => {
     var x=req.body.searchterm;
-
-    Host.find({$text:{$search:x}})
+// Using regular expression to match partial strings
+    var regex = new RegExp(x, 'i'); // 'i' flag for case-insensitive search
+        
+    Host.find({ UserName: { $regex: regex } })
     // console.log(l1);
         .then(function(results){
             if(results.length!=0){
@@ -296,9 +372,11 @@ exports.adminSearchHost=async(req,res) => {
 }
 
 exports.adminSearchListing=async(req,res) => {
-    var x=req.body.searchterm;
-
-    Listing.find({$text:{$search:x}})
+    var x=req.body.searchTerm;
+    console.log("search term:"+x);
+    var regex = new RegExp(x, 'i'); // 'i' flag for case-insensitive search
+        
+    Listing.find({ Title: { $regex: regex } })
     // console.log(l1);
         .then(function(results){
             if(results.length!=0){
@@ -334,6 +412,119 @@ exports.adminSearchReport=async(req,res) => {
             res.status(500).send({message:err.message || "Error Occured"});
         });
 }
+
+exports.createGuest=async(req,res) => {
+    try{
+    const username=req.body.formvalues.username;
+        const email=req.body.formvalues.email;
+        const phone=req.body.formvalues.phone;
+        const pass=req.body.formvalues.password;
+        console.log(username);
+        console.log(email);
+
+
+        Guest.find({'Email':email})
+        .then(function(results){
+            console.log(results);
+            if(results.length!=0){
+                // alert to change
+                return res.status(200).json({ exists: true,auth:false,error:'email already in use'});
+            }
+            else{
+                // register user
+                bcrypt.hash(pass,saltRounds,function(err, hash){
+                    const new_user=new Guest({
+                        UserName:username,
+                        Email:email,
+                        PhoneNumber:phone,
+                        password:hash
+                    })
+                    Guest.create(new_user)
+                    .then(function(){
+                        // res.redirect("/guest/login");
+                        return res.status(200).json({ exists: false ,auth:true,error:null,user:new_user});
+                    })
+                    .catch(function(err){
+                        res.status(500).send({message:err.message || "Error Occured"});
+                    })
+                
+                })
+                
+
+            }
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message || "Error Occured"});
+    }
+}
+
+exports.createHost=async(req,res) => {
+    try{
+    const username=req.body.formvalues.username;
+        const email=req.body.formvalues.email;
+        const phone=req.body.formvalues.phone;
+        const pass=req.body.formvalues.password;
+        console.log(username);
+        console.log(email);
+
+
+        Host.find({'Email':email})
+        .then(function(results){
+            console.log(results);
+            if(results.length!=0){
+                // alert to change
+                return res.status(200).json({ exists: true,auth:false,error:'email already in use'});
+            }
+            else{
+                // register user
+                bcrypt.hash(pass,saltRounds,function(err, hash){
+                    const new_user=new Guest({
+                        UserName:username,
+                        Email:email,
+                        PhoneNumber:phone,
+                        password:hash
+                    })
+                    Host.create(new_user)
+                    .then(function(){
+                        // res.redirect("/guest/login");
+                        return res.status(200).json({ exists: false ,auth:true,error:null,user:new_user});
+                    })
+                    .catch(function(err){
+                        res.status(500).send({message:err.message || "Error Occured"});
+                    })
+                
+                })
+                
+
+            }
+        })
+    }
+    catch(err){
+        res.status(500).send({message:err.message || "Error Occured"});
+    }
+}
+
+exports.readGuest=async(req,res) => {
+    try{
+        
+    }
+    catch(err){
+        res.status(500).send({message:err.message || "Error Occured"});
+    }
+}
+
+exports.readHost=async(req,res) => {
+    try{
+        
+    }
+    catch(err){
+        res.status(500).send({message:err.message || "Error Occured"});
+    }
+}
+
+
+
 
 exports.adminDelete=async(req,res) => {
     try{

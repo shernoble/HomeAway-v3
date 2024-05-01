@@ -1,15 +1,17 @@
-
 import { useState} from "react"
-import {useSelector} from "react-redux"
+import {useDispatch,useSelector} from "react-redux"
 import { Helmet,HelmetProvider } from "react-helmet-async";
-import { useNavigate,Link } from "react-router-dom";
+import { NavLink,useNavigate,Link } from "react-router-dom";
+import { AuthActions } from "../../store/authSlice";
 import { isEmailValid } from "../../js/loginRegValidations";
+import axios from "axios";
 
-export function HostLoginForm({title,picno}){
-
+export function HostLoginForm({ postLink, navigateLink, title, registerLink, picno }) 
+    {
+    const dispatch=useDispatch();
     const navigate=useNavigate();
-    const curr_user=useSelector(state => state.auth.user);
-    console.log("user : "+curr_user);
+    const user=useSelector(state => state.auth.user);
+    
     const [formvalues,setFormValues]=useState({
         email:'',
         password:''
@@ -22,16 +24,53 @@ export function HostLoginForm({title,picno}){
 
     const submitHandler = async (event) => {
         event.preventDefault();
+        // post this data
 
             if (!isEmailValid(formvalues.email)) {
                 console.log('Invalid email');
                 return;
             }
 
-            navigate('/host/p1h');
+            try {
+                
+                    const response = await axios.post(postLink, {formvalues});
+
+            
+                    if (response.data.exists) {
+                  
+                    if(response.data.auth){
+                        // LOGIN SUCCESS
+                        console.log(response.data.user);
+                        dispatch(AuthActions.login(response.data.user));
+                        dispatch({ type: 'UPDATE_HOST_EMAIL', payload: formvalues.email });
+                        navigate(navigateLink);
+            
+                    }
+                    else{
+                        // LOGIN FAIL:PASSINCORRECT
+
+                        console.log(response.data.error);
+                        setFormErrors(response.data.error);
+                    }
+                    } else {
+                    // The username does not exist
+                    // LOGIN FAIL:USERNAME DOESNT EXIST
+                        console.log(response.data.error);
+                        setFormErrors(response.data.error);
+                    }
+                
+        
+                    console.log("response:", response.data); // Log the response data
+                // }
+            } 
+            catch (error) {
+                console.error('Error making the request:', error);
+                setFormErrors(error);
+            }
 
             
         };
+        
 
     return (
         <HelmetProvider>
@@ -81,9 +120,9 @@ export function HostLoginForm({title,picno}){
                                         <button className="btn btn-dark btn-md btn-block" type="submit">LOGIN</button>
                                     </div>
 
-                                    <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <Link to="/host/register"
-                                        style={{color: '#393f81'}}>Register here</Link></p>
-                                    <Link to="/hostregister" style={{color: '#393f81'}}>Forgot Password?</Link>
+                                    <p className="mb-0 pb-lg-2" style={{color: '#393f81'}}>Don't have an account? <NavLink to={registerLink}
+                                        style={{color: '#393f81'}}>Register here</NavLink></p>
+                                    <NavLink to={registerLink} style={{color: '#393f81'}}>Forgot Password?</NavLink>
                                     <Link to="/" className="btn btn-outline-success" style={{ float: 'right', marginTop: '100px' }}>
                                         FrontPage
                                     </Link>

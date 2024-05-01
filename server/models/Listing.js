@@ -1,10 +1,10 @@
 const mongoose=require("mongoose");
 
 const listingSchema= new mongoose.Schema({
-    ListingID:{
-        type:String,
-        default:null
-    },
+    // ListingID:{
+    //     type:String,
+    //     default:null
+    // },
     img_url1:String,
     img_url2:String,
     img_url3:String,
@@ -23,7 +23,7 @@ const listingSchema= new mongoose.Schema({
         hostUserName:String,
         hostEmail:String,
         hostPhone:Number,
-        hostTotalListingsCount:Number
+        // hostTotalListingsCount:Number
 
     },
     Desc1:String,
@@ -34,10 +34,20 @@ const listingSchema= new mongoose.Schema({
     Bathrooms:Number,
     PropertyType:String,
     RoomType:String,
+    AvgRating:{
+        type:Number,
+        default:0,
+    },
     Facilities:[],
     Verified:{
         type:Boolean,
         default:false
+    },
+    Ratings:[],
+    Reviews:[],
+    createdAt:{
+        type:Date,
+        default:Date.now
     }
 });
 

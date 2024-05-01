@@ -2,11 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState={
     response:null,
-    reservation:{
-        listing:null,
-        fromDate:null,
-        toDate:null,
-    }
+    listing:localStorage.getItem("listing"),
+    fromDate:localStorage.getItem("fromDate"),
+    toDate:localStorage.getItem("toDate")
 }
 
 const guestResults=createSlice({
@@ -17,9 +15,16 @@ const guestResults=createSlice({
             state.response=action.payload;
         },
         storeReservation(state,action){
-            state.reservation.listing=action.payload.listing;
-            state.reservation.fromDate=action.payload.dates.fromDate;
-            state.reservation.toDate=action.payload.dates.toDate;
+            state.listing=action.payload.listing;
+            state.fromDate=action.payload.dates.fromDate;
+            state.toDate=action.payload.dates.toDate;
+            const fromDate = state.fromDate.toString(); // Convert date to ISO string format
+            const toDate = state.toDate.toString(); // Convert date to ISO string format
+
+// Store the date string in local storage
+            localStorage.setItem('fromDate', fromDate);
+            localStorage.setItem("listing", JSON.stringify({ ...action.payload.listing }));
+            localStorage.setItem("toDate",toDate);
         }
     }
 })

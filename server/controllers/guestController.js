@@ -2,16 +2,23 @@ require('../models/database');
 
 const bcrypt=require("bcrypt");
 const saltRounds=10;
-const alert=require("alert");
-
-let session;
 
 
 const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
 const Listing=require('../models/Listing');
 const Report=require('../models/Report');
+const Admin = require('../models/Admin');
 
+
+// const Redis=require('redis');
+
+// const redisClient=Redis.createClient();
+
+// indexes
+
+
+// works
 exports.guestStartingPage=async(req,res) => {
     try{
         res.render("guest-startingPage");
@@ -21,6 +28,7 @@ exports.guestStartingPage=async(req,res) => {
         console.log(err);
     }
 }
+// works
 exports.guestStartingPagePost=async(req,res) => {
     // redirect
     let place=req.body.formvalues.location;
@@ -101,6 +109,79 @@ exports.guestHomePageFull=async(req,res) => {
 //         console.log(error);
 //     }
 // }
+
+exports.guestGetBooking=async(req,res) => {
+    try{
+        const id=req.params.id;
+        // console.log(booking);
+        // const id=booking.ListingID;
+        Listing.findById(id)
+        .then(function(result){
+            if(result){
+                return res.status(200).send({success:true, listing:result });
+            }
+            else{
+                return res.status(500).send({success:false, message: 'error is finding listing!' });
+            }
+        })
+        .catch(function(err){
+            return res.status(500).send({success:false, message: 'error is finding listing!' });
+        })
+    }
+    catch(error){
+        return res.status(500).send({success:false, message: 'error is finding listing!' });
+    }
+}
+
+exports.getBookings =async(req,res) => {
+    try{
+        const id = req.query.user_id;
+        // console.log("user id : ");
+        // console.log(id);
+        // res.json([]);
+        Booking.find({GuestID:id})
+            .then(function(results){
+                res.status(200).send({bookings:results});
+            })
+            .catch(function(error){
+                // console.log(error);
+                return res.status(500).send({message:error.message || "Error Occured"});
+            })
+    }
+    catch(error) {
+        return res.status(500).send({message:error.message || "Error Occured"});
+    }
+}
+
+exports.guestCancelBooking = async (req, res) => {
+    try {
+        // Get the booking ID from request body
+        const booking_id = req.body.id;
+        const user=req.body.user;
+        console.log("im here in cancellation");
+        // Find booking by ID and update status to "cancelled"
+        const updatedBooking = await Booking.findByIdAndUpdate(
+            booking_id,
+            { Status: 'cancelled' },
+            { new: true } // To return the updated document
+        );
+
+        const updatedUser = await Guest.findOneAndUpdate(
+            { _id: user._id, "bookings._id": booking_id }, // Match the user and booking ID
+            { $set: { "bookings.$.Status": 'cancelled' } }, // Update the booking status
+            { new: true } // To return the updated user document
+        );
+
+        if (!updatedBooking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+
+        return res.status(200).json({ message: 'Booking cancelled successfully', booking: updatedBooking,user:updatedUser });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 exports.guestEditPass=async(req,res) => {
     try{
@@ -284,18 +365,18 @@ exports.guestRegisterPost=async(req,res) => {
 }
 
 
-exports.guestFilter=async(req,res) => {
-    const ch=req.body.choice;
-    const place=req.query.location;
-    const num_guests=req.query.guests;
-    if(place !== undefined && place!="all"){
-        // res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
-    }
-    else{
-        // res.redirect("/guest/homepagefull/?property="+ch);
-    }
+// exports.guestFilter=async(req,res) => {
+//     const ch=req.body.choice;
+//     const place=req.query.location;
+//     const num_guests=req.query.guests;
+//     if(place !== undefined && place!="all"){
+//         // res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
+//     }
+//     else{
+//         // res.redirect("/guest/homepagefull/?property="+ch);
+//     }
     
-}
+// }
 
 
 exports.guestSearch=async(req,res) => {
@@ -370,16 +451,24 @@ exports.guestReservePost=async(req,res) => {
 
 exports.guestConfirmBookingPost=async(req,res) => {
     try{
-    const { listing,checkin,checkout,user }=req.body;
+    let { listing,checkin,checkout,user }=req.body;
+
+    listing = JSON.parse(listing);
+    user=JSON.parse(user);
+
+    console.log(listing._id);
+    console.log(user._id);
+
+    
 
     const date1=new Date(checkin);
     const date2=new Date(checkout);
     let flag=false;
     const listid=listing._id;
-    console.log(user);
+    // console.log(user);
 
     const new_booking=new Booking ({
-        ListingID:listid,
+        ListingID:listing._id,
         GuestID:user._id,
         HostID:listing.host.hostID,
         FromDate:date1,
@@ -388,7 +477,7 @@ exports.guestConfirmBookingPost=async(req,res) => {
     // add booking to user bookings array (if success)
     Booking.find({ListingID:listid})
         .then((documents) => {
-            console.log(documents);
+            // console.log(documents);
             if(documents.length!=0){
                 for(let i=0;i<documents.length;i++){
                     const ti1=date1.getTime();
@@ -513,6 +602,73 @@ exports.guestReportPost=async(req,res) => {
     }
 }
 
+exports.guestReviewPost = async (req, res) => {
+    try {
+        const { review, rating, listing } = req.body;
+
+        // Create a review object containing both review and rating
+        const reviewData = {
+            review: review,
+            rating: rating
+        };
+        
+        // Find listing and insert review in listing
+        Listing.findById(listing)
+            .then(function (result) {
+                if (!result) {
+                    return res.status(404).json({ error: 'Listing not found' });
+                }
+                result.Reviews.push(reviewData);
+                result.Ratings.push(rating);
+                
+                // Calculate average rating
+                const averageRating = result.Ratings.reduce((total, currentValue) => total + currentValue, 0) / result.Ratings.length;
+                result.AvgRating = averageRating; 
+                
+                return result.save();
+            })
+            .then(function (updatedListing) {
+                res.status(200).json({ message: 'Review added successfully', listing: updatedListing });
+            })
+            .catch(function (err) {
+                console.error(err);
+                res.status(500).json({ error: 'Internal Server Error' });
+            });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const stripe=require('stripe')(process.env.SECRET_KEY);
+
+exports.guestCheckoutSession = async(req,res) => {
+    
+        const {listing,num_days} = req.body;
+
+
+        const lineItems = [{
+            price_data:{
+                currency:"inr",
+                product_data:{
+                    name:listing.Title,
+                    images:[listing.img_url1]
+                },
+                unit_amount:(listing.CostPerN)*num_days*100,
+            },
+            quantity:1
+        }];
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types:["card"],
+            line_items:lineItems,
+            mode:"payment",
+            success_url:"http://localhost:3000/guest/success",
+            cancel_url:"http://localhost:3000/guest/fail",
+        });
+
+        res.json({id:session.id})
+}
 
 
 
