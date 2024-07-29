@@ -20,3 +20,4 @@ this will start your backend at port 5050
 9.in the client terminal, run this command:
 	npm start
 this will start the client side of the application and open the app in route http://localhost:3000/
+
